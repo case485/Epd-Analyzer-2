@@ -104,6 +104,45 @@ def extract_IndustryPercentileRankTables_from_pdf():
     
     return (activeSiresPercentileRankDf, activeDamsPercentileRankDf, nonParentsPercentileRankDf)
 
+def epd_composite_score_app(df):
+            # Load your dataframe
+            # Define a function to calculate composite score
+            def calculate_composite_score(row, weights):
+                composite_score = (
+                    row['CED'] * weights['CED'] +
+                    row['BW'] * weights['BW'] +
+                    row['WW'] * weights['WW'] +
+                    row['YW'] * weights['YW'] +
+                    row['Milk'] * weights['Milk'] +
+                    row['Total Maternal'] * weights['Total Maternal'] +
+                    row['Growth Idx'] * weights['Growth Idx']
+                )
+                return composite_score
+
+            # Sidebar sliders to adjust weights
+            st.sidebar.header("Adjust Weights for EPD Traits")
+
+            weights = {
+                'CED': st.sidebar.slider('CED Weight', 0.0, 0.5, 1.0),
+                'BW': st.sidebar.slider('BW Weight', 0.0, 0.5, 1.0),
+                'WW': st.sidebar.slider('WW Weight', 0.0, 0.5, 1.0),
+                'YW': st.sidebar.slider('YW Weight', 0.0, 0.5, 1.0),
+                'Milk': st.sidebar.slider('Milk Weight', 0.0, 0.5, 1.0),
+                'Total Maternal': st.sidebar.slider('Total Maternal Weight', 0.0, 0.5, 1.0),
+                'Growth Idx': st.sidebar.slider('Growth Idx Weight', 0.0, 0.5, 1.0),
+            }
+
+            # Apply the weights and calculate composite score
+            df['Composite Score'] = df.apply(calculate_composite_score, axis=1, weights=weights)
+
+            # Display the dataframe with composite scores
+            # st.write(df[['CED', 'BW', 'WW', 'YW', 'Milk', 'Total Maternal', 'Growth Idx', 'Composite Score']])
+            return(df)
+
+
+
+
+
 def mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf):
     # Prepare to merge by adding the "CM_" prefix to all cattlemax columns
     cattlemaxDf = cattlemaxDf.add_prefix("CM_")
@@ -116,5 +155,4 @@ def mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf):
         mergedLeftJoinDf['CM_Date of Birth'] = pd.to_datetime(mergedLeftJoinDf['CM_Date of Birth'], errors='coerce')
     if 'CM_Date of Birth' in mergedOuterDf.columns:
         mergedOuterDf['CM_Date of Birth'] = pd.to_datetime(mergedOuterDf['CM_Date of Birth'], errors='coerce')
-
     return(mergedLeftJoinDf, mergedOuterDf)

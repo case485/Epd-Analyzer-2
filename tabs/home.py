@@ -40,8 +40,8 @@ def show():
             st.session_state.filteredDf = st.session_state.filteredDf[st.session_state.filteredDf['CM_Owner'].isin(owners)]
         # Display the filtered dataframe
         st.write(f"Number of Cattle in Analysis: {st.session_state.filteredDf.shape[0]}")
-        # st.dataframe(st.session_state.filteredDf)
-        
+        #Create Composite Score
+        st.session_state.filteredDf = epd_composite_score_app(st.session_state.filteredDf)
         #ENd of user downselect*****************************************
         st.session_state.filteredDf.to_pickle('datafiles/filtered_data.pkl')
         #Starts Stats WORK 
