@@ -1,0 +1,16 @@
+I want to create a streamlit application that analyzes cattle EPDs and compares epds to industry metrics. 
+I want the streamlit app to have a sidebar.
+I want the app to have the following page tabs,
+1. Home
+2. Herd Analaysis
+3. Visualizations
+4. Individaul Cattle Analaysis
+5. Raw Data 
+6. Logging
+
+I want each tab to have its own seperate file that will be referenced in by the main file
+I want each file to be able to call functions from the lib/ directory
+On the home page I want to instruct the user to upload 2 files
+1. the EPD file for the Herd
+2. the cattlemax export file for the Herd
+Also on the home page i want to show the status of the industry metrics and have a button to refresh them
