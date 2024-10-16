@@ -57,10 +57,7 @@ def extract_IndustryPercentileRankTables_from_pdf():
             activeDamsPercentileRankDf = tables[1].df  # Convert the second table to a DataFrame
             nonParentsPercentileRankDf = tables[2].df  # Convert the third table to a DataFrame
             
-            # Save the dataframes
-            activeSiresPercentileRankDf.to_pickle('datafiles/activeSiresPercentileRankDf.pkl')
-            activeDamsPercentileRankDf.to_pickle('datafiles/activeDamsPercentileRankDf.pkl') 
-            nonParentsPercentileRankDf.to_pickle('datafiles/nonParentsPercentileRankDf.pkl')
+            
 
             # Active Dams
             df = activeDamsPercentileRankDf
@@ -87,6 +84,13 @@ def extract_IndustryPercentileRankTables_from_pdf():
             df = df[1:].reset_index(drop=True)
             df = df.rename(columns={df.columns[0]: 'Categories'})
             nonParentsPercentileRankDf = df
+            
+            # Save the dataframes
+            activeSiresPercentileRankDf.to_pickle('datafiles/activeSiresPercentileRankDf.pkl')
+            activeDamsPercentileRankDf.to_pickle('datafiles/activeDamsPercentileRankDf.pkl') 
+            nonParentsPercentileRankDf.to_pickle('datafiles/nonParentsPercentileRankDf.pkl')
+           
+            
         except IndexError:
             # Handle the case where 'CED' is not found in the DataFrame
             st.error(f"Warning: 'CED' not found in one of the DataFrames.")
