@@ -1,6 +1,6 @@
 import streamlit as st
 
-@st.cache_data
+# @st.cache_data
 def get_error_log():
     # Initialize an empty list for the error log
     if 'error_log' not in st.session_state:

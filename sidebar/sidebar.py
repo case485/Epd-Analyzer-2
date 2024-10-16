@@ -40,7 +40,9 @@ def show_sidebar():
         st.session_state.epdDf = epdDf
         st.session_state.cattlemaxDf = cattlemaxDf
         st.sidebar.success("All Files uploaded successfully")
-        mergedDf = mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf)
-        st.session_state.mergedDf = mergedDf
+        mergedLeftJoinDf, mergedOuterDf = mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf)
+        st.session_state.mergedLeftDf = mergedLeftJoinDf # Left Join to only have rows where EPD data exists
+        st.session_state.mergedOuterDf = mergedOuterDf # Outer join to have all rows from both dataframes
+        st.session_state.mergedOuterDf.to_pickle("datafiles/mergedOuterDf.pkl") #DEBUG
     else:
         st.error("Please upload the required files")

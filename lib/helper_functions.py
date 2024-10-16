@@ -106,8 +106,11 @@ def mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf):
     # Rename the "CM_Registration Number" to match "Reg No" in the epdDf for merging
     cattlemaxDf = cattlemaxDf.rename(columns={"CM_Registration Number": "Reg No"})
     # Merge the dataframes on "Reg No", ensuring epdDf is not overwritten
-    mergedDf = pd.merge(epdDf, cattlemaxDf, on="Reg No", how="left")
-    if 'CM_Date of Birth' in mergedDf.columns:
-        mergedDf['CM_Date of Birth'] = pd.to_datetime(mergedDf['CM_Date of Birth'], errors='coerce')
+    mergedOuterDf = pd.merge(epdDf, cattlemaxDf, on="Reg No", how="outer")
+    mergedLeftJoinDf = pd.merge(epdDf, cattlemaxDf, on="Reg No", how="left")
+    if 'CM_Date of Birth' in mergedLeftJoinDf.columns:
+        mergedLeftJoinDf['CM_Date of Birth'] = pd.to_datetime(mergedLeftJoinDf['CM_Date of Birth'], errors='coerce')
+    if 'CM_Date of Birth' in mergedOuterDf.columns:
+        mergedOuterDf['CM_Date of Birth'] = pd.to_datetime(mergedOuterDf['CM_Date of Birth'], errors='coerce')
 
-    return(mergedDf)
+    return(mergedLeftJoinDf, mergedOuterDf)
