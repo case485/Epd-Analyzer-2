@@ -6,7 +6,6 @@ from tabs import home, herd_analysis, visualizations, individual_analysis, raw_d
 
 def show_sidebar():
     st.sidebar.title("Sidebar Options")
-    
     epd_file = st.sidebar.file_uploader("Upload the EPD File for the Herd")
     cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")
     placeholder = st.sidebar.empty()

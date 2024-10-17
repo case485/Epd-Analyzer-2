@@ -17,7 +17,9 @@ def show():
     if st.session_state.mergedOuterDf is not None:
         st.caption("Data loaded successfully.")
         # Streamlit toggle for "Alive Only or All"
-        alive_only = st.checkbox('Alive Only', value=True)
+        col1Select, col2Select, col3Select, col4Select = st.columns(4)
+        with col1Select:
+            alive_only = st.checkbox('Alive Only', value=True)
         if alive_only:
             # Filter the dataframe to show only alive (CM_Status = 'active')
             st.session_state.filteredDf = st.session_state.mergedOuterDf[st.session_state.mergedOuterDf['CM_Status'] == 'Active']
@@ -26,7 +28,8 @@ def show():
             st.session_state.filteredDf = st.session_state.mergedOuterDf
 
         # Streamlit toggle for "All Cattle or Fullblood Only"
-        fullblood_only = st.checkbox('Fullblood Only', value=False)
+        with col2Select: 
+            fullblood_only = st.checkbox('Fullblood Only', value=False)
         if fullblood_only:
             # Filter the dataframe to show only fullblood (CM_Breed 1 == 'AA' and CM_Breed Comp 1 == 100)
             st.session_state.filteredDf = st.session_state.filteredDf[(st.session_state.filteredDf['CM_Breed 1'] == 'AA') & 

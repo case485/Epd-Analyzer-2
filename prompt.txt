@@ -14,3 +14,25 @@ On the home page I want to instruct the user to upload 2 files
 1. the EPD file for the Herd
 2. the cattlemax export file for the Herd
 Also on the home page i want to show the status of the industry metrics and have a button to refresh them
+
+
+On the culling tab
+I want to create two dataframes that will be displayed to the user.
+The first dataframe will be of the top perfomring cattle based on their composite score
+The second will be of the bottom performing cattle based on their composite score
+For each cow in the dataframe I want to list their name , registration number, their EPDs and composite score
+The user will have a selection option to choose between All cattle, Active Sires, Active Dams , or Non-Parents.
+Active sires are selected by the "CM_Type or Sex" == "B" and "CM_Date of Birth" > 2 years old
+Active dams are selected by the "CM_Type or Sex" == "C" and "CM_Date of Birth" > 2 years old
+Non-Parents are selected by the "CM_Date of Birth" >2 years old
+When a selection is made for the type of cow (Active Sires, Active Dams, Non-Parents) you have to load the the paired industry 
+frame with the industry metrics for the selected type of cow. For active dams the industry df is st.session_state.activeDamsPercentileRankDf
+for active sires it is st.session_state.activeSiresPercentileRankDf for non-parents it is st.session_state.nonParentsPercentileRankDf.
+When the filtereddf is displayed to the user I want to compare the cattle EPDs to the industry metrics for the selected type of cow.
+If the cattle EPDs are above the industry metrics for the selected type of cow then the cattle EPDs will be highlighted in green.
+If the cattle EPDs are below the industry metrics for the selected type of cow then the cattle EPDs will be highlighted in red.
+To compare the the filtereddf to the industry metrics several of the EPDs are labled the same,such as CED, BW, WW, YW but Milk, total maternal and growth 
+are not labled the same. 
+In the filtereddf milk is "Milk" and in the industry metrics it is "MK".
+In the filtereddf total maternal is "Total Maternal" and in the industry metrics it is "TM".
+In the filtereddf growth is "Growth Idx" and in the industry metrics it is "Growth".
