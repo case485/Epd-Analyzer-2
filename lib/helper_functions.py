@@ -113,9 +113,9 @@ def epd_composite_score_app(df):
                     row['BW'] * weights['BW'] +
                     row['WW'] * weights['WW'] +
                     row['YW'] * weights['YW'] +
-                    row['Milk'] * weights['Milk'] +
-                    row['Total Maternal'] * weights['Total Maternal'] +
-                    row['Growth Idx'] * weights['Growth Idx']
+                    row['MK'] * weights['MK'] +
+                    row['TM'] * weights['TM'] +
+                    row['Growth'] * weights['Growth']
                 )
                 return composite_score
 
@@ -127,9 +127,9 @@ def epd_composite_score_app(df):
                 'BW': st.sidebar.slider('BW Weight', 0.0, 0.5, 1.0),
                 'WW': st.sidebar.slider('WW Weight', 0.0, 0.5, 1.0),
                 'YW': st.sidebar.slider('YW Weight', 0.0, 0.5, 1.0),
-                'Milk': st.sidebar.slider('Milk Weight', 0.0, 0.5, 1.0),
-                'Total Maternal': st.sidebar.slider('Total Maternal Weight', 0.0, 0.5, 1.0),
-                'Growth Idx': st.sidebar.slider('Growth Idx Weight', 0.0, 0.5, 1.0),
+                'MK': st.sidebar.slider('Milk Weight', 0.0, 0.5, 1.0),
+                'TM': st.sidebar.slider('Total Maternal Weight', 0.0, 0.5, 1.0),
+                'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 0.5, 1.0),
             }
 
             # Apply the weights and calculate composite score
@@ -139,20 +139,24 @@ def epd_composite_score_app(df):
             # st.write(df[['CED', 'BW', 'WW', 'YW', 'Milk', 'Total Maternal', 'Growth Idx', 'Composite Score']])
             return(df)
 
-
-
-
-
-def mergeEpdAndCattlemaxDfs(epdDf, cattlemaxDf):
-    # Prepare to merge by adding the "CM_" prefix to all cattlemax columns
-    cattlemaxDf = cattlemaxDf.add_prefix("CM_")
-    # Rename the "CM_Registration Number" to match "Reg No" in the epdDf for merging
-    cattlemaxDf = cattlemaxDf.rename(columns={"CM_Registration Number": "Reg No"})
-    # Merge the dataframes on "Reg No", ensuring epdDf is not overwritten
-    mergedOuterDf = pd.merge(epdDf, cattlemaxDf, on="Reg No", how="outer")
-    mergedLeftJoinDf = pd.merge(epdDf, cattlemaxDf, on="Reg No", how="left")
-    if 'CM_Date of Birth' in mergedLeftJoinDf.columns:
-        mergedLeftJoinDf['CM_Date of Birth'] = pd.to_datetime(mergedLeftJoinDf['CM_Date of Birth'], errors='coerce')
-    if 'CM_Date of Birth' in mergedOuterDf.columns:
-        mergedOuterDf['CM_Date of Birth'] = pd.to_datetime(mergedOuterDf['CM_Date of Birth'], errors='coerce')
-    return(mergedLeftJoinDf, mergedOuterDf)
+def clean_and_modify_CattlemaxDfs(df):
+    
+    df = df.rename(columns={
+        'Calving Ease Direct EPD': 'CED',
+        'Calving Ease Direct Acc': 'CED Acc',
+        'Birth Weight EPD': 'BW',
+        'Birth Weight Acc': 'BW Acc',
+        'Weaning Weight EPD': 'WW',
+        'Weaning Weight Acc': 'WW Acc',
+        'Yearling Weight EPD': 'YW',
+        'Yearling Weight Acc': 'YW Acc',
+        'Milk EPD': 'MK',
+        'Milk Acc': 'MK Acc',
+        'Total Maternal EPD': 'TM'
+    })
+    df['Growth'] = (0.5 * df['BW'] * df['BW Acc']) + \
+                   (10 * df['WW'] * df['WW Acc']) + \
+                   (50 * df['YW'] * df['YW Acc'])
+    df['Date of Birth'] = pd.to_datetime(df['Date of Birth'], errors='coerce')
+    
+    return(df)

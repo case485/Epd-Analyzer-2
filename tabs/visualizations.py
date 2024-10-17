@@ -62,9 +62,9 @@ def show():
         def add_industry_trend_lines(fig, cattle_type, epd, filtered_data):
             # Dictionary to map the EPD column names between the filtered and industry data
             epd_map = {
-                'MK': 'Milk',
-                'Total Maternal': 'TM',
-                'Growth Idx': 'Growth',
+                'MK': 'MK',
+                'TM': 'TM',
+                'Growth': 'Growth',
                 'CED': 'CED',
                 'BW': 'BW',
                 'WW': 'WW',
@@ -128,20 +128,20 @@ def show():
             # EPD selection
             epd = st.selectbox(
                 'Select EPD for Scatter Plot',
-                ['CED', 'BW', 'WW', 'YW', 'MK', 'Total Maternal', 'Growth Idx', 'Composite Score']
+                ['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth', 'Composite Score']
             )
             
             # Ensure the CM_Date of Birth is in datetime format
-            data['CM_Date of Birth'] = pd.to_datetime(data['CM_Date of Birth'], errors='coerce')
+            data['Date of Birth'] = pd.to_datetime(data['Date of Birth'], errors='coerce')
 
             # Calculate age in years
-            data['Age (Years)'] = (datetime.now() - data['CM_Date of Birth']).dt.days / 365.25
+            data['Age (Years)'] = (datetime.now() - data['Date of Birth']).dt.days / 365.25
 
             # Filter data based on the selected cattle type
             if cattle_type == 'Active Sires':
-                filtered_data = data[(data['CM_Type or Sex'] == 'B') & (data['Age (Years)'] >= 2)]
+                filtered_data = data[(data['Type or Sex'] == 'B') & (data['Age (Years)'] >= 2)]
             elif cattle_type == 'Active Dams':
-                filtered_data = data[(data['CM_Type or Sex'] == 'C') & (data['Age (Years)'] >= 2)]
+                filtered_data = data[(data['Type or Sex'] == 'C') & (data['Age (Years)'] >= 2)]
             else:
                 filtered_data = data[data['Age (Years)'] < 2]
 
@@ -155,7 +155,7 @@ def show():
                 filtered_data, 
                 x='Name', 
                 y=epd, 
-                color='CM_Type or Sex',
+                color='Type or Sex',
                 title=f'Scatter Plot of {epd} vs Cattle Names for {cattle_type}',
                 labels={'Name': 'Cattle Name', epd: epd},
             )

@@ -11,14 +11,12 @@ def show():
         st.write(f"nonParentsPercentileDf : {st.session_state.nonParentsPercentileRankDf.shape}")
         st.dataframe(st.session_state.nonParentsPercentileRankDf)
     
-    with st.expander("User Data for Epds and Cattlemax"):
-        st.write(f"EPD Only : {st.session_state.epdDf.shape}")
-        st.dataframe(st.session_state.epdDf)
+    with st.expander("User Data for Cattlemax"):
         st.write(f"CattleMax Data : {st.session_state.cattlemaxDf.shape}")
         st.dataframe(st.session_state.cattlemaxDf)
     with st.expander("Merged Outer (ALL ROWS From Both Data Sets) Data"):
-        st.write(f"Merged Data : {st.session_state.mergedOuterDf.shape}")
-        st.dataframe(st.session_state.mergedOuterDf)
+        st.write(f"Merged Data : {st.session_state.cattleMaxCleanDf.shape}")
+        st.dataframe(st.session_state.cattleMaxCleanDf)
         
     with st.expander("Filtered Data"):
         st.write(f"Filtered Data : {st.session_state.filteredDf.shape}")

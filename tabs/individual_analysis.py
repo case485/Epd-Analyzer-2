@@ -14,9 +14,9 @@ def show():
                 "BW": "BW",
                 "WW": "WW",
                 "YW": "YW",
-                "Milk": "MK",
-                "Total Maternal": "TM",
-                "Growth Idx": "Growth"
+                "MK": "MK",
+                "TM": "TM",
+                "Growth": "Growth"
             }
 
             for cow_idx, cow in filtered_df.iterrows():

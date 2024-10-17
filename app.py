@@ -3,10 +3,8 @@ from tabs import home, herd_analysis, visualizations, individual_analysis, raw_d
 from sidebar import sidebar  # Import the sidebar
 
 # Initialize session state variables only if they don't exist
-if 'mergedLeftDf' not in st.session_state:
-    st.session_state.mergedLeftDf = None
-if 'mergedOuterDf' not in st.session_state:
-    st.session_state.mergedOuterDf = None
+if 'cattleMaxCleanDf' not in st.session_state:
+    st.session_state.cattleMaxCleanDf = None
 if 'mergedDf' not in st.session_state:
     st.session_state.mergedDf = None
 if 'epdDf' not in st.session_state:
@@ -22,7 +20,7 @@ tabs = st.tabs(["Home", "Herd Analysis", "Visualizations", "Individual Cattle An
 with tabs[0]:
     home.show()
 
-if st.session_state.mergedLeftDf is not None:
+if st.session_state.cattleMaxCleanDf is not None:
     with tabs[1]:
         herd_analysis.show()
 

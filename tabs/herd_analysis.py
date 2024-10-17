@@ -6,17 +6,17 @@ def show():
     if st.session_state.filteredDf is not None:
         df = st.session_state.filteredDf
         st.write("Perform analysis of the herd EPDs and compare to industry benchmarks.")
-        df['CM_Age'] = (pd.to_datetime('today').year) - df['CM_Date of Birth'].dt.year
-        damsDf = df[(df['CM_Type or Sex'] == 'C') & (df['CM_Age'] >= 2)]
-        siresDf = df[(df['CM_Type or Sex'] == 'B') & (df['CM_Age'] >= 2)]
-        nonParentDf = df[df['CM_Age'] < 2]
+        df['Age'] = (pd.to_datetime('today').year) - df['Date of Birth'].dt.year
+        damsDf = df[(df['Type or Sex'] == 'C') & (df['Age'] >= 2)]
+        siresDf = df[(df['Type or Sex'] == 'B') & (df['Age'] >= 2)]
+        nonParentDf = df[df['Age'] < 2]
     def compare_sires_epds_with_industry(yourHerdDf, industryDf, catagory):
         if catagory == "Dams":
-            yourHerdDf = yourHerdDf[(yourHerdDf['CM_Type or Sex'] == 'C') & (yourHerdDf['CM_Age'] >= 2)]
+            yourHerdDf = yourHerdDf[(yourHerdDf['Type or Sex'] == 'C') & (yourHerdDf['Age'] >= 2)]
         elif catagory == "Sires":
-            yourHerdDf = yourHerdDf[(yourHerdDf['CM_Type or Sex'] == 'B') & (yourHerdDf['CM_Age'] >= 2)]
+            yourHerdDf = yourHerdDf[(yourHerdDf['Type or Sex'] == 'B') & (yourHerdDf['Age'] >= 2)]
         elif catagory == "Non-Parents":
-            yourHerdDf = yourHerdDf[yourHerdDf['CM_Age'] < 2]
+            yourHerdDf = yourHerdDf[yourHerdDf['Age'] < 2]
         else:
             raise ValueError("Invalid catagory. Must be 'Dams', 'Sires', or 'Non-Parents'.")
         column_mapping = {
@@ -24,9 +24,9 @@ def show():
             'BW': 'BW',
             'WW': 'WW',
             'YW': 'YW',
-            'MK': 'Milk',             # MK in activeSiresPercentileDf is Milk in filtered_df
-            'TM': 'Total Maternal',    # TM in activeSiresPercentileDf is Total Maternal in filtered_df
-            'Growth': 'Growth Idx'     # Growth in activeSiresPercentileDf is Growth Idx in filtered_df
+            'MK': 'MK',             # MK in activeSiresPercentileDf is Milk in filtered_df
+            'TM': 'TM',    # TM in activeSiresPercentileDf is Total Maternal in filtered_df
+            'Growth': 'Growth'     # Growth in activeSiresPercentileDf is Growth Idx in filtered_df
         }
 
         # Filter the columns based on the mapping
@@ -35,15 +35,15 @@ def show():
         # filtered_sires_avg_epds["Herd Avgs"] = filtered_sires_avg_epds["Herd Avgs"].round(2)
         
         # Rename the columns in the filtered_sires_avg_epds to match the activeSiresPercentileRankDf
-        filtered_sires_avg_epds = filtered_sires_avg_epds.rename({
-            'Milk': 'MK',
-            'Total Maternal': 'TM',
-            'Growth Idx': 'Growth'
-        })
+        # filtered_sires_avg_epds = filtered_sires_avg_epds.rename({
+        #     'MK': 'MK',
+        #     'TM': 'TM',
+        #     'Growth': 'Growth'
+        # })
 
         # Ensure 'Growth' is properly added to the comparison
         filtered_sires_avg_epds_with_growth = filtered_sires_avg_epds.copy()
-        filtered_sires_avg_epds_with_growth['Growth'] = round(yourHerdDf['Growth Idx'].mean(),2)
+        filtered_sires_avg_epds_with_growth['Growth'] = round(yourHerdDf['Growth'].mean(),2)
         # Recreate the comparison dataframe including 'Growth'
         comparison_df = pd.DataFrame({
             'Herd Avgs': filtered_sires_avg_epds_with_growth,
