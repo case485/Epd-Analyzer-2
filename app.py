@@ -5,10 +5,7 @@ from sidebar import sidebar  # Import the sidebar
 # Initialize session state variables only if they don't exist
 if 'cattleMaxCleanDf' not in st.session_state:
     st.session_state.cattleMaxCleanDf = None
-if 'mergedDf' not in st.session_state:
-    st.session_state.mergedDf = None
-if 'epdDf' not in st.session_state:
-    st.session_state.epdDf = None
+
 
 # Display the sidebar
 sidebar.show_sidebar()

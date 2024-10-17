@@ -132,11 +132,7 @@ def epd_composite_score_app(df):
                 'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 0.5, 1.0),
             }
 
-            # Apply the weights and calculate composite score
             df['Composite Score'] = df.apply(calculate_composite_score, axis=1, weights=weights)
-
-            # Display the dataframe with composite scores
-            # st.write(df[['CED', 'BW', 'WW', 'YW', 'Milk', 'Total Maternal', 'Growth Idx', 'Composite Score']])
             return(df)
 
 def clean_and_modify_CattlemaxDfs(df):
@@ -154,9 +150,11 @@ def clean_and_modify_CattlemaxDfs(df):
         'Milk Acc': 'MK Acc',
         'Total Maternal EPD': 'TM'
     })
-    df['Growth'] = (0.5 * df['BW'] * df['BW Acc']) + \
-                   (10 * df['WW'] * df['WW Acc']) + \
-                   (50 * df['YW'] * df['YW Acc'])
+    df['Growth'] = (- 0.301 * df['BW'] ) + \
+                   ( 0.039 * df['WW']) + \
+                   (1.098 * df['YW'] ) - 6.815
     df['Date of Birth'] = pd.to_datetime(df['Date of Birth'], errors='coerce')
+    df['Year_Born'] = df['Date of Birth'].dt.year
+    df['Age'] = (pd.to_datetime('today').year) - df['Date of Birth'].dt.year
     
     return(df)

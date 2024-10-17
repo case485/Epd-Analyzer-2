@@ -43,13 +43,16 @@ def show():
         if selection2 == "Active Dams":
             industry_metrics_df = st.session_state.activeDamsPercentileRankDf
             #FIX ME : need to add the filtered cattle df here as well
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
         elif selection2 == "Active Sires":
             industry_metrics_df = st.session_state.activeSiresPercentileRankDf
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
         else:
             industry_metrics_df = st.session_state.nonParentsPercentileRankDf
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
 
         # Apply EPD comparison
-        highlighted_df = compare_epds_to_industry(st.session_state.filteredDf, industry_metrics_df)
+        highlighted_df = compare_epds_to_industry(comparisonDF, industry_metrics_df)
 
         # Sort for top and bottom performing cattle based on composite score
         top_performers_df = highlighted_df.nlargest(5, 'Composite Score')

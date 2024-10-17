@@ -11,54 +11,6 @@ def show():
     st.title("Visualizations")
     st.title("Herd Analysis")
     if st.session_state.filteredDf is not None:
-        # def interactive_scatterplot(data):
-        #     st.title('Interactive Cattle EPD Scatter Plot')
-
-        #     # Sidebar options for cattle type selection
-        #     cattle_type = st.selectbox(
-        #         'Select Cattle Type',
-        #         ['Active Sires', 'Active Dams', 'Non-Parents']
-        #     )
-            
-        #     # EPD selection
-        #     epd = st.selectbox(
-        #         'Select EPD for Scatter Plot',
-        #         ['CED', 'BW', 'WW', 'YW', 'Milk', 'Total Maternal', 'Growth Idx', 'Composite Score']
-        #     )
-            
-        #     # Ensure the CM_Date of Birth is in datetime format
-        #     data['CM_Date of Birth'] = pd.to_datetime(data['CM_Date of Birth'], errors='coerce')
-
-        #     # Calculate age in years
-        #     data['Age (Years)'] = (datetime.now() - data['CM_Date of Birth']).dt.days / 365.25
-
-        #     # Filter data based on the selected cattle type
-        #     if cattle_type == 'Active Sires':
-        #         filtered_data = data[(data['CM_Type or Sex'] == 'B') & (data['Age (Years)'] >= 2)]
-        #     elif cattle_type == 'Active Dams':
-        #         filtered_data = data[(data['CM_Type or Sex'] == 'C') & (data['Age (Years)'] >= 2)]
-        #     else:
-        #         filtered_data = data[data['Age (Years)'] < 2]
-
-        #     # Check if filtered data is available
-        #     if filtered_data.empty:
-        #         st.write("No data available for the selected filter.")
-        #         return
-
-        #     # Plotting with Plotly
-        #     fig = px.scatter(
-        #         filtered_data, 
-        #         x='Name', 
-        #         y=epd, 
-        #         color='CM_Type or Sex',
-        #         title=f'Scatter Plot of {epd} vs Cattle Names for {cattle_type}',
-        #         labels={'Name': 'Cattle Name', epd: epd},
-        #     )
-            
-        #     fig.update_layout(xaxis_tickangle=-45)  # Rotate x-axis labels for readability
-        #     st.plotly_chart(fig)
-        # interactive_scatterplot(st.session_state.filteredDf)
-        
         def add_industry_trend_lines(fig, cattle_type, epd, filtered_data):
             # Dictionary to map the EPD column names between the filtered and industry data
             epd_map = {
@@ -128,12 +80,9 @@ def show():
             # EPD selection
             epd = st.selectbox(
                 'Select EPD for Scatter Plot',
-                ['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth', 'Composite Score']
+                ['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
             )
             
-            # Ensure the CM_Date of Birth is in datetime format
-            data['Date of Birth'] = pd.to_datetime(data['Date of Birth'], errors='coerce')
-
             # Calculate age in years
             data['Age (Years)'] = (datetime.now() - data['Date of Birth']).dt.days / 365.25
 

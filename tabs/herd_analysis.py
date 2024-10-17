@@ -2,14 +2,11 @@ import streamlit as st
 from lib.helper_functions import *
 
 def show():
-    st.title("Herd Analysis")
+    st.title("Herd Pipeline Analysis")
     if st.session_state.filteredDf is not None:
         df = st.session_state.filteredDf
         st.write("Perform analysis of the herd EPDs and compare to industry benchmarks.")
-        df['Age'] = (pd.to_datetime('today').year) - df['Date of Birth'].dt.year
-        damsDf = df[(df['Type or Sex'] == 'C') & (df['Age'] >= 2)]
-        siresDf = df[(df['Type or Sex'] == 'B') & (df['Age'] >= 2)]
-        nonParentDf = df[df['Age'] < 2]
+        
     def compare_sires_epds_with_industry(yourHerdDf, industryDf, catagory):
         if catagory == "Dams":
             yourHerdDf = yourHerdDf[(yourHerdDf['Type or Sex'] == 'C') & (yourHerdDf['Age'] >= 2)]
@@ -32,15 +29,6 @@ def show():
         # Filter the columns based on the mapping
         filtered_sires_avg_epds = yourHerdDf[list(column_mapping.values())].mean().round(2)
         industry_avg_epds_adjusted = industryDf[industryDf['Categories'] == 'Average'][list(column_mapping.keys())].iloc[0]
-        # filtered_sires_avg_epds["Herd Avgs"] = filtered_sires_avg_epds["Herd Avgs"].round(2)
-        
-        # Rename the columns in the filtered_sires_avg_epds to match the activeSiresPercentileRankDf
-        # filtered_sires_avg_epds = filtered_sires_avg_epds.rename({
-        #     'MK': 'MK',
-        #     'TM': 'TM',
-        #     'Growth': 'Growth'
-        # })
-
         # Ensure 'Growth' is properly added to the comparison
         filtered_sires_avg_epds_with_growth = filtered_sires_avg_epds.copy()
         filtered_sires_avg_epds_with_growth['Growth'] = round(yourHerdDf['Growth'].mean(),2)
@@ -49,16 +37,7 @@ def show():
             'Herd Avgs': filtered_sires_avg_epds_with_growth,
             'Industry Avg': industry_avg_epds_adjusted
         }).reindex(index=['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth'])
-
         comparison_df["Herd Avgs"].map(lambda x: round(x, 2))
-        
-        
-        # Apply conditional formatting: bold green for better performance, bold red for worse
-        def highlight_comparison(val, industry_val):
-            if val > industry_val:
-                return 'font-weight: bold; color: green'
-            else:
-                return 'font-weight: bold; color: red'
 
         # Apply the formatting cell-wise
         def highlight_cells(data):
@@ -70,33 +49,99 @@ def show():
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: red'
             return styled_data
 
-        # Apply the styling
         styled_comparison_df = comparison_df.style.apply(highlight_cells, axis=None)
         
-
-        # Return the styled comparison dataframe
         return styled_comparison_df
 
-    # Test the function with styling
-    #Sires
-    sires_styled_comparison_df = compare_sires_epds_with_industry(st.session_state.filteredDf, st.session_state.activeSiresPercentileRankDf, "Sires")
-    #Dams
-    dams_styled_comparison_df = compare_sires_epds_with_industry(st.session_state.filteredDf, st.session_state.activeDamsPercentileRankDf, "Dams")
-    #Non-Parents
-    non_parents_styled_comparison_df = compare_sires_epds_with_industry(st.session_state.filteredDf, st.session_state.nonParentsPercentileRankDf, "Non-Parents")
+    
+    
 
-    # Display the styled dataframe
-    col1, col2, col3 = st.columns(3)
+
+    
+    #FIX adding test section here: 
+    
+    st.markdown("---")
+    col1, col2, col3 = st.columns(3, gap="large")
     with col1:
-        st.write(f"Sires (Total : {siresDf.shape[0]})")
-        st.dataframe(sires_styled_comparison_df)
+        cowCatagory = st.radio(
+            "Select Cattle Type for Analysis",
+            ["Active_Sires", "Active_Dams", "Non_Parents"],
+            captions=[
+                "Laugh out loud.",
+                "Get the popcorn.",
+                "Never stop learning.",
+            ],
+        )
+        if cowCatagory == "Active_Sires":
+            st.write("You selected comedy.")
+            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
+        elif cowCatagory == "Active_Dams":
+            st.write("You selected drama.")
+            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
+        elif cowCatagory == "Non_Parents":
+            st.write("You selected romance.")
+            scenarioDf = st.session_state.filteredDf[st.session_state.filteredDf['Age'] < 2]
+        else:
+            st.write("You didn't select comedy.")
+    
+    
+    
+    
+    
+   
+    # List of EPD columns to create sliders for
+    epd_columns = ['CED', 'BW', 'WW', 'YW', 'TM', 'MK', "Composite Score"]
+
+    # Create a dictionary to store the selected registration numbers
+    selected_registration_numbers = {}
+
+    # Streamlit app
+    
+
+    # Loop through each EPD column to create a slider
     with col2:
-        st.write(f"Dams (Total : {damsDf.shape[0]})")
-        st.dataframe(dams_styled_comparison_df)
+        for epd in epd_columns:
+            # Slider to select the number of rows with the lowest values for the current EPD
+            slider_value = st.slider(f"Select number of lowest {epd} values", 0, scenarioDf.shape[0], 0)
+            
+            # If the slider value is greater than 0, select the rows with the lowest values for the EPD
+            if slider_value > 0:
+                lowest_values_df = scenarioDf.nsmallest(slider_value, epd)
+                selected_registration_numbers[epd] = lowest_values_df['Registration Number'].tolist()
+
+    # Display the selected registration numbers for each EPD
+    cullList = []
+    for epd, reg_numbers in selected_registration_numbers.items():
+
+        st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
+        for reg_number in reg_numbers:
+            cullList.append(reg_number)
+    st.write(f"Cull List: {cullList}")
+    #DEBUG Now remove all cullList cows from the scenarioDF
+    # st.session_state.filteredDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
+    scenarioDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
+   
+    #Sires
+    sires_styled_comparison_df = compare_sires_epds_with_industry(scenarioDf, st.session_state.activeSiresPercentileRankDf, "Sires")
+    #Dams
+    dams_styled_comparison_df = compare_sires_epds_with_industry(scenarioDf, st.session_state.activeDamsPercentileRankDf, "Dams")
+    #Non-Parents
+    non_parents_styled_comparison_df = compare_sires_epds_with_industry(scenarioDf, st.session_state.nonParentsPercentileRankDf, "Non-Parents")
+    
+    
+    
+    # Display the styled dataframe
+    
     with col3:
+        activeSiresDf = scenarioDf[(scenarioDf['Type or Sex'] == 'B') & (df['Age'] >= 2)]
+        st.write(f"Sires (Total : {activeSiresDf.shape[0]})")
+        st.dataframe(sires_styled_comparison_df)
+        activeDamsDf = scenarioDf[(scenarioDf['Type or Sex'] == 'C') & (df['Age'] >= 2)]
+        st.write(f"Dams (Total : {activeDamsDf.shape[0]})")
+        st.dataframe(dams_styled_comparison_df)
+        nonParentDf = scenarioDf[scenarioDf['Age'] < 2]
         st.write(f"Non-Parents (Total : {nonParentDf.shape[0]})")
         st.dataframe(non_parents_styled_comparison_df)
     
 
-        
-        #        
+     

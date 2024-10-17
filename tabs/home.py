@@ -90,7 +90,8 @@ def show():
             current_year = datetime.now().year
 
             # Calculate current age based on 'CM_Date of Birth' column
-            st.session_state.filteredDf.loc[:, 'Age'] = current_year - pd.to_datetime(st.session_state.filteredDf['Date of Birth'], errors='coerce').dt.year
+            st.session_state.filteredDf.loc[:, 'Age'] = current_year - st.session_state.filteredDf['Date of Birth'].dt.year
+            # st.session_state.filteredDf.loc[:, 'Age'] = current_year - pd.to_datetime(st.session_state.filteredDf['Date of Birth'], errors='coerce').dt.year
 
 
             # Non-Parents This Year: Cows that are currently less than 2 years old
@@ -110,9 +111,12 @@ def show():
             # Display the metric showing the current number of non-parents and the change from last year
             st.metric(label="Non-Parents This Year", value=non_parents_this_year, delta=change_in_non_parents)
 
+        
+        
+       
         def plot_year_born_histogram():
-            # Ensure the 'CM_Date of Birth' is parsed as a datetime and extract the year
-            st.session_state.filteredDf['Year_Born'] = pd.to_datetime(st.session_state.filteredDf['Date of Birth'], errors='coerce').dt.year
+            # Convert the 'Year_Born' column to the correct format
+            st.session_state.filteredDf['Year_Born'] = pd.to_numeric(st.session_state.filteredDf['Year_Born'].astype(str).str.replace(',', ''), errors='coerce')
 
             # Drop rows where 'Year_Born' is NaN
             year_counts = st.session_state.filteredDf.groupby(['Year_Born', 'Type or Sex']).size().reset_index(name='Count')
@@ -124,11 +128,27 @@ def show():
                 st.warning("No data available for the selected range of dates.")
                 return
 
-            # Fit a trend line using numpy for linear regression based on total counts
+            # Calculate total counts and CAGR
             year_counts['Total'] = year_counts.sum(axis=1)
-            z = np.polyfit(year_counts.index, year_counts['Total'], 1)
-            trend = np.poly1d(z)
+            
+            def calculate_cagr(start_value, end_value, num_years):
+                return (end_value / start_value) ** (1 / num_years) - 1
 
+            cagr_values = []
+            for i in range(1, len(year_counts)):
+                start_year = year_counts.index[0]
+                end_year = year_counts.index[i]
+                start_value = year_counts['Total'].iloc[0]
+                end_value = year_counts['Total'].iloc[i]
+                num_years = end_year - start_year
+                cagr = calculate_cagr(start_value, end_value, num_years)
+                cagr_values.append(cagr)
+
+            cagr_df = pd.DataFrame({
+                'Year': year_counts.index[1:],
+                'CAGR': cagr_values
+            })
+            cagr_df['Year'] = cagr_df['Year'].astype(int).astype(str)
             # Create a bar chart with stacked bars for bulls and cows
             fig = go.Figure()
 
@@ -150,18 +170,18 @@ def show():
                     marker_color='pink'
                 ))
 
-            # Add a trend line (linear regression line)
+            # Add CAGR line
             fig.add_trace(go.Scatter(
-                x=year_counts.index,
-                y=trend(year_counts.index),
-                name='Trend Line',
+                x=cagr_df['Year'],
+                y=year_counts['Total'].iloc[0] * (1 + cagr_df['CAGR']).cumprod(),
+                name='CAGR Line',
                 mode='lines',
                 line=dict(color='red')
             ))
 
             # Update layout for better readability
             fig.update_layout(
-                title='Number of Cows and Bulls by Year of Birth with Trend Line',
+                title='Number of Cows and Bulls by Year of Birth with CAGR Line',
                 xaxis_title='Year of Birth',
                 yaxis_title='Number of Cows and Bulls',
                 xaxis=dict(tickmode='linear'),
@@ -173,10 +193,14 @@ def show():
             # Display the figure
             st.plotly_chart(fig)
 
-        plot_year_born_histogram()
-        
-       
+            # Display CAGR table
+            st.subheader("CAGR Values by Year")
+            cagr_df_transposed = cagr_df.set_index('Year').T
+            cagr_df_transposed.index = ['CAGR']
+            st.dataframe(cagr_df_transposed.style.format('{:.2%}'))
 
+        # Call the function
+        plot_year_born_histogram()
 
 
         
