@@ -61,10 +61,10 @@ def show():
     #FIX adding test section here: 
     
     st.markdown("---")
-    col1, col2, col3 = st.columns(3, gap="large")
+    col1, col2, col3 = st.columns([0.2, 0.2, 0.6], gap="large")
     with col1:
         cowCatagory = st.radio(
-            "Select Cattle Type for Analysis",
+            "Cattle Type for Analysis",
             ["Active_Sires", "Active_Dams", "Non_Parents"],
             captions=[
                 "Laugh out loud.",
@@ -73,13 +73,13 @@ def show():
             ],
         )
         if cowCatagory == "Active_Sires":
-            st.write("You selected comedy.")
+            st.write("You selected Sires.")
             scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
         elif cowCatagory == "Active_Dams":
-            st.write("You selected drama.")
+            st.write("You selected Dams.")
             scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
         elif cowCatagory == "Non_Parents":
-            st.write("You selected romance.")
+            st.write("You selected Non-Parents.")
             scenarioDf = st.session_state.filteredDf[st.session_state.filteredDf['Age'] < 2]
         else:
             st.write("You didn't select comedy.")
@@ -116,7 +116,8 @@ def show():
         st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
         for reg_number in reg_numbers:
             cullList.append(reg_number)
-    st.write(f"Cull List: {cullList}")
+    with col2: 
+        st.write(f"Cull List: {cullList}")
     #DEBUG Now remove all cullList cows from the scenarioDF
     # st.session_state.filteredDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
     scenarioDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
