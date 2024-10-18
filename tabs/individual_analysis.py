@@ -1,48 +1,129 @@
+# import streamlit as st
+# import pandas as pd
+# import numpy as np
+
+# def show():
+#     st.title("Individual Cattle Analysis")
+#     st.write("Analyze EPDs of individual cattle.")
+    
+#     if st.session_state.filteredDf is not None:
+#         comparison_columns = {
+#             "CED": "CED",
+#             "BW": "BW",
+#             "WW": "WW",
+#             "YW": "YW",
+#             "MK": "MK",
+#             "TM": "TM",
+#             "Growth": "Growth"
+#         }
+
+#         def compare_epds_to_industry(filtered_df, industry_df):
+#             for epd, industry_epd in comparison_columns.items():
+#                 industry_value = float(industry_df.loc[industry_df['Categories'] == 'Average', industry_epd].values[0])
+#                 filtered_df[f'{epd}_industry_avg'] = industry_value
+#             return filtered_df
+
+#         def style_dataframe(data, columns_to_display):
+#             def highlight_cells(val, col):
+#                 try:
+#                     cow_value = float(val)
+#                     industry_value = data[f'{col}_industry_avg'].iloc[0]
+#                     if pd.notnull(cow_value) and pd.notnull(industry_value):
+#                         color = 'green' if cow_value > industry_value else 'red'
+#                         return f'font-weight: bold; color: {color}'
+#                 except (ValueError, TypeError):
+#                     pass
+#                 return ''
+
+#             styled = data[columns_to_display].style
+#             for col in comparison_columns:
+#                 if col in columns_to_display:
+#                     styled = styled.applymap(lambda x: highlight_cells(x, col), subset=[col])
+#             return styled
+
+#         selection2 = st.selectbox("Select Cattle Type", ["Active Sires", "Active Dams", "Non-Parents"], key="cattle_type_selection")
+
+#         if selection2 == "Active Dams":
+#             industry_metrics_df = st.session_state.activeDamsPercentileRankDf
+#             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
+#         elif selection2 == "Active Sires":
+#             industry_metrics_df = st.session_state.activeSiresPercentileRankDf
+#             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
+#         else:
+#             industry_metrics_df = st.session_state.nonParentsPercentileRankDf
+#             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
+
+#         highlighted_df = compare_epds_to_industry(comparisonDF, industry_metrics_df)
+
+#         selected_value = st.slider(
+#             "Select Number of Cattle to Display",
+#             min_value=1,
+#             max_value=highlighted_df.shape[0],
+#             value=5  # Default value
+#         )
+
+#         display_columns = ['Name', 'Registration Number', 'Age', 'Composite Score', 'CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
+
+#         top_performers_df = highlighted_df.nlargest(selected_value, 'Composite Score')
+#         bottom_performers_df = highlighted_df.nsmallest(selected_value, 'Composite Score')
+
+#         st.subheader("Top Performing Cattle")
+#         st.dataframe(style_dataframe(top_performers_df, display_columns))
+
+#         st.subheader("Bottom Performing Cattle")
+#         st.dataframe(style_dataframe(bottom_performers_df, display_columns))
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 def show():
     st.title("Individual Cattle Analysis")
     st.write("Analyze EPDs of individual cattle.")
-    # Add logic to display individual cattle analysis
+    
     if st.session_state.filteredDf is not None:
-
+        comparison_columns = {
+            "CED": "CED",
+            "BW": "BW",
+            "WW": "WW",
+            "YW": "YW",
+            "MK": "MK",
+            "TM": "TM",
+            "Growth": "Growth"
+        }
 
         def compare_epds_to_industry(filtered_df, industry_df):
-            comparison_columns = {
-                "CED": "CED",
-                "BW": "BW",
-                "WW": "WW",
-                "YW": "YW",
-                "MK": "MK",
-                "TM": "TM",
-                "Growth": "Growth"
-            }
-
-            for cow_idx, cow in filtered_df.iterrows():
-                for epd, industry_epd in comparison_columns.items():
-                    try:
-                        cow_value = float(cow[epd]) if pd.notnull(cow[epd]) else None
-                        industry_value = float(industry_df.loc[industry_df['Categories'] == 'Average', industry_epd].values[0])
-
-                        if cow_value is not None:
-                            if cow_value > industry_value:
-                                filtered_df.at[cow_idx, epd] = f"<span style='color:green'>{cow_value}</span>"
-                            else:
-                                filtered_df.at[cow_idx, epd] = f"<span style='color:red'>{cow_value}</span>"
-                    except (ValueError, TypeError):
-                        # Skip if conversion to float fails or comparison is not possible
-                        continue
-
+            for epd, industry_epd in comparison_columns.items():
+                industry_value = float(industry_df.loc[industry_df['Categories'] == 'Average', industry_epd].values[0])
+                filtered_df[f'{epd}_industry_avg'] = round(industry_value, 2)
             return filtered_df
 
-        # Get user selection (simulated here as Streamlit options)
-        selection2 = st.selectbox("Select Cattle Type", ["Active Sires", "Active Dams", "Non-Parents"] ,key="cattle_type_selection")
+        def round_numeric_columns(df):
+            numeric_columns = df.select_dtypes(include=[np.number]).columns
+            df[numeric_columns] = df[numeric_columns].round(2)
+            return df
 
-        # Load corresponding industry dataframe
+        def style_dataframe(data, columns_to_display):
+            def highlight_cells(val, col):
+                try:
+                    cow_value = float(val)
+                    industry_value = data[f'{col}_industry_avg'].iloc[0]
+                    if pd.notnull(cow_value) and pd.notnull(industry_value):
+                        color = 'green' if cow_value > industry_value else 'red'
+                        return f'font-weight: bold; color: {color}'
+                except (ValueError, TypeError):
+                    pass
+                return ''
+
+            styled = data[columns_to_display].style
+            for col in comparison_columns:
+                if col in columns_to_display:
+                    styled = styled.applymap(lambda x: highlight_cells(x, col), subset=[col])
+            return styled
+
+        selection2 = st.selectbox("Select Cattle Type", ["Active Sires", "Active Dams", "Non-Parents"], key="cattle_type_selection")
+
         if selection2 == "Active Dams":
             industry_metrics_df = st.session_state.activeDamsPercentileRankDf
-            #FIX ME : need to add the filtered cattle df here as well
             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
         elif selection2 == "Active Sires":
             industry_metrics_df = st.session_state.activeSiresPercentileRankDf
@@ -51,11 +132,23 @@ def show():
             industry_metrics_df = st.session_state.nonParentsPercentileRankDf
             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
 
-        # Apply EPD comparison
         highlighted_df = compare_epds_to_industry(comparisonDF, industry_metrics_df)
+        highlighted_df = round_numeric_columns(highlighted_df)
 
-        # Sort for top and bottom performing cattle based on composite score
-        top_performers_df = highlighted_df.nlargest(5, 'Composite Score')
-        bottom_performers_df = highlighted_df.nsmallest(5, 'Composite Score')
-        st.dataframe(top_performers_df)
-        st.dataframe(bottom_performers_df)
+        selected_value = st.slider(
+            "Select Number of Cattle to Display",
+            min_value=1,
+            max_value=highlighted_df.shape[0],
+            value=5  # Default value
+        )
+
+        display_columns = ['Name', 'Registration Number', 'Age', 'Composite Score', 'CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
+
+        top_performers_df = highlighted_df.nlargest(selected_value, 'Composite Score')
+        bottom_performers_df = highlighted_df.nsmallest(selected_value, 'Composite Score')
+
+        st.subheader("Top Performing Cattle")
+        st.dataframe(style_dataframe(top_performers_df, display_columns))
+
+        st.subheader("Bottom Performing Cattle")
+        st.dataframe(style_dataframe(bottom_performers_df, display_columns))

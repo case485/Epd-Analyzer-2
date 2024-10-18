@@ -8,12 +8,15 @@ st.set_page_config(layout="wide")
 if 'cattleMaxCleanDf' not in st.session_state:
     st.session_state.cattleMaxCleanDf = None
 if 'cattlemax_file' not in st.session_state:
-    st.session_state.cattleMaxCleanDf = None
+    st.session_state.cattlemax_file = None
 
 
-st.write(f"CattleMaxCleanDf in session state: {st.session_state.cattleMaxCleanDf}")
 for key, value in st.session_state.items():
     st.write(f"Key: {key}")
+
+if 'cattlemax_file' not in st.session_state:
+    st.write(f'cattlemax_file not in st.session_state')
+    
 # Display the sidebar
 st.session_state.cattlemax_file = sidebar.show_sidebar()
 

@@ -55,19 +55,26 @@ def show():
             one_year_ago = datetime.now() - timedelta(days=365)      # One year ago from today
             three_years_ago = datetime.now() - timedelta(days=3*365) # Three years ago from today
             # Filter the dataframe for cows of specified sex and also by date of birth (>= 2 years old)
-            cows_df = st.session_state.filteredDf[
-                (st.session_state.filteredDf[filterToApply] == sex) &
-                (st.session_state.filteredDf['Date of Birth'] <= two_years_ago)
+            if sex == "S":
+                cows_df = st.session_state.filteredDf[
+                (st.session_state.filteredDf[filterToApply] == sex).fillna(0)
             ]
+            else: 
+                cows_df = st.session_state.filteredDf[
+                    (st.session_state.filteredDf[filterToApply] == sex) &
+                    (st.session_state.filteredDf['Date of Birth'] <= two_years_ago).fillna(0)
+                ]
 
             # Total number of cows
             total_cows = cows_df.shape[0]
+           
 
             # Count the number of cows that were <= 2 years old last year but are >= 2 years old now
+            
             new_cows_last_year = st.session_state.filteredDf[
                 (st.session_state.filteredDf[filterToApply] == sex) &
                 (st.session_state.filteredDf['Date of Birth'] > three_years_ago) &
-                (st.session_state.filteredDf['Date of Birth'] <= two_years_ago)
+                (st.session_state.filteredDf['Date of Birth'] <= two_years_ago).fillna(0)
             ].shape[0]
 
             return total_cows, new_cows_last_year
@@ -110,8 +117,8 @@ def show():
 
         with col4:
             # Display the metric showing the current number of non-parents and the change from last year
-            total_cows, new_cows_last_year = calculate_cow_herd_count_by_sex("S")
-            st.metric(label="Steers", value=total_cows, delta=new_cows_last_year)
+            total_steers, new_steers_last_year = calculate_cow_herd_count_by_sex("S")
+            st.metric(label="Steers", value=total_steers, delta=new_steers_last_year)
         
        
         def plot_year_born_histogram():

@@ -8,9 +8,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 def show():
-    st.title("Visualizations")
-    st.title("Herd Analysis")
-    
     st.title('Interactive Cattle EPD Scatter Plot with Industry Trend Lines')
 
     # Sidebar options for cattle type selection
