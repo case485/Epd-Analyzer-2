@@ -10,6 +10,36 @@ import plotly.graph_objects as go
 def show():
     st.title("Visualizations")
     st.title("Herd Analysis")
+    
+    st.title('Interactive Cattle EPD Scatter Plot with Industry Trend Lines')
+
+    # Sidebar options for cattle type selection
+    cattle_type = st.selectbox(
+        'Select Cattle Type',
+        ['Active Sires', 'Active Dams', 'Non-Parents']
+    )
+    
+    # EPD selection
+    epd = st.selectbox(
+        'Select EPD for Scatter Plot',
+        ['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
+    )
+    
+    # Calculate age in years
+    st.session_state.filteredDf['Age (Years)'] = (datetime.now() - st.session_state.filteredDf['Date of Birth']).dt.days / 365.25
+
+    # Filter data based on the selected cattle type
+    
+    if cattle_type == 'Active Sires':
+        filtered_data = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age (Years)'] >= 2)]
+    elif cattle_type == 'Active Dams':
+        filtered_data = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age (Years)'] >= 2)]
+    else:
+        filtered_data = st.session_state.filteredDf[st.session_state.filteredDf['Age (Years)'] < 2]    
+
+    
+    
+    
     if st.session_state.filteredDf is not None:
         def add_industry_trend_lines(fig, cattle_type, epd, filtered_data):
             # Dictionary to map the EPD column names between the filtered and industry data
@@ -69,30 +99,7 @@ def show():
             return fig
 
         def interactive_scatterplot_with_trend(data):
-            st.title('Interactive Cattle EPD Scatter Plot with Industry Trend Lines')
 
-            # Sidebar options for cattle type selection
-            cattle_type = st.selectbox(
-                'Select Cattle Type',
-                ['Active Sires', 'Active Dams', 'Non-Parents']
-            )
-            
-            # EPD selection
-            epd = st.selectbox(
-                'Select EPD for Scatter Plot',
-                ['CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
-            )
-            
-            # Calculate age in years
-            data['Age (Years)'] = (datetime.now() - data['Date of Birth']).dt.days / 365.25
-
-            # Filter data based on the selected cattle type
-            if cattle_type == 'Active Sires':
-                filtered_data = data[(data['Type or Sex'] == 'B') & (data['Age (Years)'] >= 2)]
-            elif cattle_type == 'Active Dams':
-                filtered_data = data[(data['Type or Sex'] == 'C') & (data['Age (Years)'] >= 2)]
-            else:
-                filtered_data = data[data['Age (Years)'] < 2]
 
             # Check if filtered data is available
             if filtered_data.empty:
@@ -102,6 +109,7 @@ def show():
             # Create the scatter plot using Plotly
             fig = px.scatter(
                 filtered_data, 
+                width=1000,
                 x='Name', 
                 y=epd, 
                 color='Type or Sex',
@@ -114,4 +122,37 @@ def show():
             
             fig.update_layout(xaxis_tickangle=-45)  # Rotate x-axis labels for readability
             st.plotly_chart(fig)
-        interactive_scatterplot_with_trend(st.session_state.filteredDf)
+        interactive_scatterplot_with_trend(filtered_data)
+        
+        
+        def plot_epd_histograms(df, epd):
+            st.title("EPD Histograms for the Herd")
+            
+            # Extract the specific EPD columns
+            epd_columns = [epd]
+            
+            # Iterate over each EPD column and plot histogram
+            for epd in epd_columns:
+                if epd in df.columns:
+                    st.subheader(f"Histogram for {epd}")
+                    
+                    # Add Name and Registration Number columns to the dataframe used for plotting
+                    df_copy = df.copy()
+                    df_copy['Hover Info'] = df_copy['Name'] + " | Reg: " + df_copy['Registration Number']
+                    
+                    # Create a custom hover data including Name and Registration Number
+                    fig = px.histogram(df_copy, x=epd, nbins=30, title=f"Distribution of {epd}", hover_name='Hover Info')
+                    
+                    # Calculate statistics
+                    mean = df[epd].mean()
+                    std_dev = df[epd].std()
+                    
+                    # Add lines for mean and ±2 standard deviations
+                    fig.add_vline(x=mean, line_dash="dash", line_color="green", annotation_text="Mean", annotation_position="top left")
+                    fig.add_vline(x=mean + 2 * std_dev, line_dash="dash", line_color="red", annotation_text=f"+2 SD ({std_dev:.2f})", annotation_position="top left")
+                    fig.add_vline(x=mean - 2 * std_dev, line_dash="dash", line_color="blue", annotation_text=f"-2 SD ({std_dev:.2f})", annotation_position="top left")
+                    
+                    fig.update_layout(bargap=0.1, title_x=0.5)
+                    st.plotly_chart(fig)
+
+        plot_epd_histograms(filtered_data, epd)

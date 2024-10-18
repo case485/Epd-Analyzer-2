@@ -2,10 +2,32 @@ import streamlit as st
 from lib.helper_functions import *
 
 def show():
-    st.title("Herd Pipeline Analysis")
+    topCol1, topCol2, topCol3 = st.columns(3, gap="large")
+    with topCol1:
+        st.title("Herd Pipeline Analysis")
+    with topCol3:
+        cowCatagory = st.radio(
+                "Cattle Type for Analysis",
+                ["Active_Sires", "Active_Dams", "Non_Parents"],
+            )
+        if cowCatagory == "Active_Sires":
+            st.write("You selected Sires.")
+            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
+        elif cowCatagory == "Active_Dams":
+            st.write("You selected Dams.")
+            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
+        elif cowCatagory == "Non_Parents":
+            st.write("You selected Non-Parents.")
+            scenarioDf = st.session_state.filteredDf[st.session_state.filteredDf['Age'] < 2]
+        else:
+            st.write("You didn't select type.")
+            
+            
+            
     if st.session_state.filteredDf is not None:
         df = st.session_state.filteredDf
-        st.write("Perform analysis of the herd EPDs and compare to industry benchmarks.")
+        with topCol1:
+            st.write("Perform analysis of the herd EPDs and compare to industry benchmarks.")
         
     def compare_sires_epds_with_industry(yourHerdDf, industryDf, catagory):
         if catagory == "Dams":
@@ -53,53 +75,16 @@ def show():
         
         return styled_comparison_df
 
-    
-    
-
-
-    
     #FIX adding test section here: 
     
     st.markdown("---")
     col1, col2, col3 = st.columns([0.2, 0.2, 0.6], gap="large")
-    with col1:
-        cowCatagory = st.radio(
-            "Cattle Type for Analysis",
-            ["Active_Sires", "Active_Dams", "Non_Parents"],
-            captions=[
-                "Laugh out loud.",
-                "Get the popcorn.",
-                "Never stop learning.",
-            ],
-        )
-        if cowCatagory == "Active_Sires":
-            st.write("You selected Sires.")
-            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
-        elif cowCatagory == "Active_Dams":
-            st.write("You selected Dams.")
-            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
-        elif cowCatagory == "Non_Parents":
-            st.write("You selected Non-Parents.")
-            scenarioDf = st.session_state.filteredDf[st.session_state.filteredDf['Age'] < 2]
-        else:
-            st.write("You didn't select comedy.")
-    
-    
-    
-    
-    
-   
     # List of EPD columns to create sliders for
     epd_columns = ['CED', 'BW', 'WW', 'YW', 'TM', 'MK', "Composite Score"]
-
     # Create a dictionary to store the selected registration numbers
     selected_registration_numbers = {}
-
-    # Streamlit app
-    
-
     # Loop through each EPD column to create a slider
-    with col2:
+    with col1:
         for epd in epd_columns:
             # Slider to select the number of rows with the lowest values for the current EPD
             slider_value = st.slider(f"Select number of lowest {epd} values", 0, scenarioDf.shape[0], 0)
@@ -116,7 +101,7 @@ def show():
         st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
         for reg_number in reg_numbers:
             cullList.append(reg_number)
-    with col2: 
+    with col1: 
         st.write(f"Cull List: {cullList}")
     #DEBUG Now remove all cullList cows from the scenarioDF
     # st.session_state.filteredDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]

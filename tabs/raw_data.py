@@ -11,9 +11,7 @@ def show():
         st.write(f"nonParentsPercentileDf : {st.session_state.nonParentsPercentileRankDf.shape}")
         st.dataframe(st.session_state.nonParentsPercentileRankDf)
     
-    with st.expander("User Data for Cattlemax"):
-        st.write(f"CattleMax Data : {st.session_state.cattlemaxDf.shape}")
-        st.dataframe(st.session_state.cattlemaxDf)
+    
     with st.expander("Merged Outer (ALL ROWS From Both Data Sets) Data"):
         st.write(f"Merged Data : {st.session_state.cattleMaxCleanDf.shape}")
         st.dataframe(st.session_state.cattleMaxCleanDf)

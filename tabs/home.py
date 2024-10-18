@@ -12,7 +12,7 @@ import numpy as np
 def show():
     industryPdfFile = None
     
-    st.title("Welcome to Cattle EPD Analyzer")
+    st.title("Akaushi Cattle EPD Analyzer")
     #User Selection to downfilter data 
     if st.session_state.cattleMaxCleanDf is not None:
         st.caption("Data loaded successfully.")
@@ -21,20 +21,17 @@ def show():
         with col1Select:
             alive_only = st.checkbox('Alive Only', value=True)
         if alive_only:
-            # Filter the dataframe to show only alive (CM_Status = 'active')
             st.session_state.filteredDf = st.session_state.cattleMaxCleanDf[st.session_state.cattleMaxCleanDf['Status'] == 'Active']
         else:
-            # Show all entries
             st.session_state.filteredDf = st.session_state.cattleMaxCleanDf
 
         # Streamlit toggle for "All Cattle or Fullblood Only"
         with col2Select: 
             fullblood_only = st.checkbox('Fullblood Only', value=False)
         if fullblood_only:
-            # Filter the dataframe to show only fullblood (CM_Breed 1 == 'AA' and CM_Breed Comp 1 == 100)
             st.session_state.filteredDf = st.session_state.filteredDf[(st.session_state.filteredDf['Breed 1'] == 'AA') & 
                                                                       (st.session_state.filteredDf['Breed Comp 1'] == 100)]
-
+ 
         
         # Dropdown for selecting multiple owners (CM_Owner)
         owners = st.multiselect('Select Owner(s)', options=st.session_state.cattleMaxCleanDf['Owner'].unique(), default=None, placeholder="Select Ranch Owner(s)")
@@ -78,7 +75,7 @@ def show():
        
        
        
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
             total_cows,  new_cows_last_year = calculate_cow_herd_count_by_sex("C")
             st.metric(label="Total Active Dams", value=total_cows, delta=new_cows_last_year)
@@ -111,7 +108,10 @@ def show():
             # Display the metric showing the current number of non-parents and the change from last year
             st.metric(label="Non-Parents This Year", value=non_parents_this_year, delta=change_in_non_parents)
 
-        
+        with col4:
+            # Display the metric showing the current number of non-parents and the change from last year
+            total_cows, new_cows_last_year = calculate_cow_herd_count_by_sex("S")
+            st.metric(label="Steers", value=total_cows, delta=new_cows_last_year)
         
        
         def plot_year_born_histogram():
@@ -169,6 +169,13 @@ def show():
                     name='Cows',
                     marker_color='pink'
                 ))
+            if 'S' in year_counts.columns:
+                fig.add_trace(go.Bar(
+                    x=year_counts.index,
+                    y=year_counts['S'],
+                    name='Steer',
+                    marker_color='lightblue'
+                ))
 
             # Add CAGR line
             fig.add_trace(go.Scatter(
@@ -181,6 +188,7 @@ def show():
 
             # Update layout for better readability
             fig.update_layout(
+                width=1000,
                 title='Number of Cows and Bulls by Year of Birth with CAGR Line',
                 xaxis_title='Year of Birth',
                 yaxis_title='Number of Cows and Bulls',
@@ -216,6 +224,6 @@ def show():
         
         
         
-    else:
-        st.write("Please upload the required files.")
+    # else:
+    #     st.write("Please upload the required files.")
     

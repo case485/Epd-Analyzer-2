@@ -6,7 +6,7 @@ from tabs import home, herd_analysis, visualizations, individual_analysis, raw_d
 
 def show_sidebar():
     st.sidebar.title("Sidebar Options")
-    cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")
+    st.session_state.cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")
     placeholder = st.sidebar.empty()
     st.sidebar.subheader("Industry Metrics Status")
     #If file exists then print success
@@ -28,13 +28,16 @@ def show_sidebar():
             st.session_state.activeSiresPercentileRankDf, st.session_state.activeDamsPercentileRankDf, st.session_state.nonParentsPercentileRankDf = extract_IndustryPercentileRankTables_from_pdf()
         else:
             st.sidebar.error("Failed to refresh metrics")
-    if cattlemax_file is not None and industryPdfFile is not None: 
-        cattlemaxDf = pd.read_csv(cattlemax_file)
-        st.session_state.cattlemaxDf = cattlemaxDf
+    if st.session_state.cattlemax_file is not None and industryPdfFile is not None: 
+        cattlemax_csv= pd.read_csv(st.session_state.cattlemax_file)
+        # st.session_state.cattlemaxDf = cattlemaxDf
         st.sidebar.success("All Files uploaded successfully")
-        cattleMaxCleanDf = clean_and_modify_CattlemaxDfs( cattlemaxDf)
-        st.session_state.cattleMaxCleanDf = cattleMaxCleanDf # Outer join to have all rows from both dataframes
+        st.session_state.cattleMaxCleanDf = clean_and_modify_CattlemaxDfs( cattlemax_csv)
+        # st.session_state.cattleMaxCleanDf = cattleMaxCleanDf # Outer join to have all rows from both dataframes
         st.session_state.cattleMaxCleanDf.to_pickle("datafiles/cattleMaxCleanDf.pkl") #DEBUG
+        return(st.session_state.cattleMaxCleanDf)
         
     else:
         st.error("Please upload the required files")
+        st.write(f"Cattlemax File Status: {st.session_state.cattlemax_file is not None}")
+        st.write(f"Industry File Status: {industryPdfFile is not None}")
