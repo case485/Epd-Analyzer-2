@@ -43,59 +43,56 @@ def show():
     def buildSearchQuery ():
         # Define the search form
         #Get industry Data: 
-        st.write(st.session_state.activeSiresPercentileRankDf.columns)
-        st.write(st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == '5%'])
-        with st.form(key="search_form"):
-            st.write("EPD Search Form")
-            # Form inputs corresponding to the ones in JavaScript
-            minced = st.text_input("Min CED")
-            maxced = st.text_input("Max CED")
-            # mincedacc = st.text_input("Min CED Accuracy")
-            minbwt = st.text_input("Min BWT")
-            maxbwt = st.text_input("Max BWT")
-            # minbwtacc = st.text_input("Min BWT Accuracy")
-            minwwt = st.text_input("Min WWT")
-            maxwwt = st.text_input("Max WWT")
-            # minwwtacc = st.text_input("Min WWT Accuracy")
-            minywt = st.text_input("Min YWT")
-            maxywt = st.text_input("Max YWT")
-            # minywtacc = st.text_input("Min YWT Accuracy")
-            minmilk = st.text_input("Min Milk")
-            maxmilk = st.text_input("Max Milk")
-            # mincedacc = st.text_input("Min Milk Accuracy")
-            mintm = st.text_input("Min TM")
-            maxtm = st.text_input("Max TM")
-            mingrowth = st.text_input("Min Growth")
-            maxgrowth = st.text_input("Max Growth")
-            sex = st.text_input("Sex")
-            # Submit button
-            submit_button = st.form_submit_button(label="Search")
+        minced = ""
+        maxbwt = ""
+        minwwt = ""
+        minywt = ""
+        mintm = ""
+        minmilk = ""
+        mingrowth = ""
+        options = st.multiselect(
+            "Select EPD(s) to optimize Bull Selection with:",
+            ["CED", "BW", "WW", "YW","TM", "MK", "Growth"],
+            ["TM"],
+        )
 
-        # Handle form submission
-        if submit_button:
-            # Create the query string
+        st.write("You selected:", options)
+        for option in options:
+            epd = option
+            
+            value = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == '5%'][epd].values[0]
+            st.write(f"You selected: {epd} {value}")
+            if epd == "CED":
+                minced = value
+            elif epd == "BW":
+                maxbwt = value
+            elif epd == "WW":
+                minwwt = value
+            elif epd == "YW":
+                minywt = value
+            elif epd == "TM":
+                mintm = value
+            elif epd == "MK":
+                minmilk = value
+            elif epd == "Growth":
+                mingrowth = value
+            else:
+                st.write("Invalid EPD selected.")
+                
+        
+
+        if st.multiselect:
             params = {
                 "minced": minced,
-                "maxced": maxced,
-                "mincedacc": mincedacc,
-                "minbwt": minbwt,
                 "maxbwt": maxbwt,
-                "minbwtacc": minbwtacc,
                 "minwwt": minwwt,
-                "maxwwt": maxwwt,
-                "minwwtacc": minwwtacc,
                 "minywt": minywt,
-                "maxywt": maxywt,
-                "minywtacc": minywtacc,
                 "minmilk": minmilk,
-                "maxmilk": maxmilk,
                 "mintm": mintm,
-                "maxtm": maxtm,
                 "mingrowth": mingrowth,
-                "maxgrowth": maxgrowth,
-                "animal_sex":sex,
+                "animal_sex": "B",
             }
-
+            st.write(f"Query Parameters: {params}")
             # Filter out empty parameters
             params = {k: v for k, v in params.items() if v}
             # Simulate the API request (replace with actual API endpoint)
