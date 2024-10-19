@@ -9,6 +9,8 @@ if 'cattleMaxCleanDf' not in st.session_state:
     st.session_state.cattleMaxCleanDf = None
 if 'cattlemax_file' not in st.session_state:
     st.session_state.cattlemax_file = None
+if 'filteredDf' not in st.session_state:
+    st.session_state.filteredDf = None
 
 
 for key, value in st.session_state.items():
@@ -27,7 +29,7 @@ st.session_state.tabs = st.tabs(["Home", "Herd Analysis", "Visualizations", "Ind
 with st.session_state.tabs[0]:
     home.show()
 
-if st.session_state.cattleMaxCleanDf is not None:
+if st.session_state.cattleMaxCleanDf is not None or st.session_state.filteredDf is not None:
     with st.session_state.tabs[1]:
         herd_analysis.show()
 

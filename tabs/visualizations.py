@@ -37,6 +37,15 @@ def show():
     
     
     
+    import plotly.express as px
+    fig2 = px.scatter(filtered_data, x='Name', y='Composite Score', color='Age', hover_data=['Name', 'Registration Number', 'Age (Years)'], title=f'{cattle_type} EPD Scatter Plot')
+    st.plotly_chart(fig2)
+    
+    
+    
+    
+    
+    
     if st.session_state.filteredDf is not None:
         def add_industry_trend_lines(fig, cattle_type, epd, filtered_data):
             # Dictionary to map the EPD column names between the filtered and industry data

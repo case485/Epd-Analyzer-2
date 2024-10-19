@@ -71,7 +71,7 @@ def show():
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: red'
             return styled_data
 
-        styled_comparison_df = comparison_df.style.apply(highlight_cells, axis=None)
+        styled_comparison_df = comparison_df.style.apply(highlight_cells, axis=None).format(precision=2)
         
         return styled_comparison_df
 
