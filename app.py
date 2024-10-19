@@ -1,5 +1,5 @@
 import streamlit as st
-from tabs import home, herd_analysis, visualizations, individual_analysis, raw_data, logging
+from tabs import home, herd_analysis, visualizations, individual_analysis, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
 
@@ -23,7 +23,7 @@ if 'cattlemax_file' not in st.session_state:
 st.session_state.cattlemax_file = sidebar.show_sidebar()
 
 # Define the tabs using `st.tabs`
-st.session_state.tabs = st.tabs(["Home", "Herd Analysis", "Visualizations", "Individual Cattle Analysis", "Raw Data", "Logging"])
+st.session_state.tabs = st.tabs(["Home", "Herd Analysis", "Visualizations", "Individual Cattle Analysis","Sire Search", "Raw Data", "Logging"])
 
 # Load the appropriate content in each tab
 with st.session_state.tabs[0]:
@@ -40,7 +40,9 @@ if st.session_state.cattleMaxCleanDf is not None or st.session_state.filteredDf 
         individual_analysis.show()
 
     with st.session_state.tabs[4]:
+        sire_search.show()
+    with st.session_state.tabs[5]:
         raw_data.show()
 
-    with st.session_state.tabs[5]:
+    with st.session_state.tabs[6]:
         logging.show()

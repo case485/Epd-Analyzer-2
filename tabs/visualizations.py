@@ -37,9 +37,7 @@ def show():
     
     
     
-    import plotly.express as px
-    fig2 = px.scatter(filtered_data, x='Name', y='Composite Score', color='Age', hover_data=['Name', 'Registration Number', 'Age (Years)'], title=f'{cattle_type} EPD Scatter Plot')
-    st.plotly_chart(fig2)
+    
     
     
     
@@ -130,24 +128,27 @@ def show():
             st.plotly_chart(fig)
         interactive_scatterplot_with_trend(filtered_data)
         
-        
-        def plot_epd_histograms(df, epd):
-            st.title("EPD Histograms for the Herd")
+        def plot_epd_bar_chart(df, epd):
+            st.title("EPD Bar Chart for the Herd")
             
             # Extract the specific EPD columns
             epd_columns = [epd]
             
-            # Iterate over each EPD column and plot histogram
+            # Iterate over each EPD column and plot bar graph
             for epd in epd_columns:
                 if epd in df.columns:
-                    st.subheader(f"Histogram for {epd}")
+                    st.subheader(f"Bar Chart for {epd}")
                     
-                    # Add Name and Registration Number columns to the dataframe used for plotting
+                    # Group the data by EPD values and gather cow names for each group
                     df_copy = df.copy()
-                    df_copy['Hover Info'] = df_copy['Name'] + " | Reg: " + df_copy['Registration Number']
+                    df_grouped = df_copy.groupby(epd).agg({
+                        'Name': lambda x: ', '.join(x),  # Join cow names for hover info
+                        'Registration Number': 'count'  # Count of cows per EPD value
+                    }).reset_index()
                     
-                    # Create a custom hover data including Name and Registration Number
-                    fig = px.histogram(df_copy, x=epd, nbins=30, title=f"Distribution of {epd}", hover_name='Hover Info')
+                    # Create the bar chart with hover info showing cow names
+                    fig = px.bar(df_grouped, x=epd, y='Registration Number',
+                                hover_data={'Name': True}, title=f"Distribution of {epd}")
                     
                     # Calculate statistics
                     mean = df[epd].mean()
@@ -161,4 +162,4 @@ def show():
                     fig.update_layout(bargap=0.1, title_x=0.5)
                     st.plotly_chart(fig)
 
-        plot_epd_histograms(filtered_data, epd)
+        plot_epd_bar_chart(filtered_data, epd)

@@ -197,6 +197,7 @@ def show():
             fig.update_layout(
                 width=1000,
                 title='Number of Cows and Bulls by Year of Birth with CAGR Line',
+                title_font_size=25,
                 xaxis_title='Year of Birth',
                 yaxis_title='Number of Cows and Bulls',
                 xaxis=dict(tickmode='linear'),
@@ -209,13 +210,20 @@ def show():
             st.plotly_chart(fig)
 
             # Display CAGR table
-            st.subheader("CAGR Values by Year")
+            st.write("####  CAGR Values by Year")
             cagr_df_transposed = cagr_df.set_index('Year').T
             cagr_df_transposed.index = ['CAGR']
             st.dataframe(cagr_df_transposed.style.format('{:.2%}'))
 
         # Call the function
         plot_year_born_histogram()
+        
+        import plotly.express as px
+        fig2 = px.scatter(st.session_state.filteredDf, x='Name', y='Composite Score', color='Type or Sex',hover_data=["Registration Number", "Type or Sex"], title=f'Full Herd View by Composite Score')
+        fig2.update_layout(
+            title_font_size=25,
+        )
+        st.plotly_chart(fig2)
 
 
         

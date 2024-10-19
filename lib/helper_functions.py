@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import camelot
 from config import *
+from datetime import datetime
 
 def log_error(message):
     # Check if the 'error_log' exists in session_state, if not, create it
@@ -136,7 +137,7 @@ def epd_composite_score_app(df):
             return(df)
 
 def clean_and_modify_CattlemaxDfs(df):
-    
+    today = datetime.today()
     df = df.rename(columns={
         'Calving Ease Direct EPD': 'CED',
         'Calving Ease Direct Acc': 'CED Acc',
@@ -156,5 +157,25 @@ def clean_and_modify_CattlemaxDfs(df):
     df['Date of Birth'] = pd.to_datetime(df['Date of Birth'], errors='coerce')
     df['Year_Born'] = df['Date of Birth'].dt.year
     df['Age'] = (pd.to_datetime('today').year) - df['Date of Birth'].dt.year
+    def assign_designation(row):
+        if pd.isnull(row['Year_Born']):
+            return 'Unknown'  # Handle cases where Year_Born is missing
+        
+        age_in_years = today.year - int(row['Year_Born'])
+        
+        if row['Type or Sex'] == 'B' and age_in_years >= 2:
+            return 'Bull'
+        elif row['Type or Sex'] == 'C' and age_in_years >= 2:
+            return 'Dam'
+        elif row['Type or Sex'] in ['B', 'C'] and age_in_years < 2:
+            return 'Non-Parent'
+        elif row['Type or Sex'] == 'S':
+            return 'Steer'
+        
+        return 'Unknown'  # Default for rows that don't match any condition
+    df['Designation'] = df.apply(assign_designation, axis=1)
     
     return(df)
+
+
+
