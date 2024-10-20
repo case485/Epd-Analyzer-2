@@ -4,8 +4,7 @@ import numpy as np
 from functools import partial
 
 def show():
-    st.title("Individual Cattle Analysis")
-    st.write("Analyze EPDs of individual cattle.")
+    st.title("Isolate Top and Bottom Performers")
     
     if st.session_state.filteredDf is not None:
         comparison_columns = {
@@ -30,8 +29,12 @@ def show():
                     cow_value = float(val)
                     industry_value = data[f'{col}_industry_avg'].iloc[0]
                     if pd.notnull(cow_value) and pd.notnull(industry_value):
-                        color = 'green' if cow_value > industry_value else 'red'
-                        return f'font-weight: bold; color: {color}'
+                        if col == "BW":
+                            color = 'green' if cow_value < industry_value else 'red'
+                            return f'font-weight: bold; color: {color}'
+                        else:
+                            color = 'green' if cow_value > industry_value else 'red'
+                            return f'font-weight: bold; color: {color}'
                 except (ValueError, TypeError):
                     pass
                 return ''
@@ -70,8 +73,8 @@ def show():
         top_performers_df = highlighted_df.nlargest(selected_value, 'Composite Score')
         bottom_performers_df = highlighted_df.nsmallest(selected_value, 'Composite Score')
 
-        st.subheader("Top Performing Cattle")
+        st.subheader(f"Top Performing {selection2}")
         st.dataframe(style_dataframe(top_performers_df, display_columns))
 
-        st.subheader("Bottom Performing Cattle")
+        st.subheader(f"Bottom Performing {selection2}")
         st.dataframe(style_dataframe(bottom_performers_df, display_columns))

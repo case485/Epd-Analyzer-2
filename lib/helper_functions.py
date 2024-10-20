@@ -112,24 +112,28 @@ def epd_composite_score_app(df):
             def calculate_composite_score(row, weights):
                 #FIX - need to normalize each epd by dividing by the max value of each trait
                 if row['Designation'] == "Bull":
-                    industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
                 elif row['Designation'] == "Dam":
-                    industryRow = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowHigh = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "High"]
+                    industryRowLow = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "Low"]
                 elif row['Designation'] == "Non-Parent":
-                    industryRow = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowHigh = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "High"]
+                    industryRowLow = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "Low"]
                 elif row['Designation'] == "Steer":
-                    industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                    industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
                 else:
-                    st.error(f"Unknown designation: {row['Designation']}")
+                    st.error(f"Designation not recognized: {row['Designation']}")
                 
                 composite_score = (
-                    row['CED'] / float(industryRow["CED"][1]) * weights['CED'] +
-                    row['BW'] / float(industryRow["BW"][1])* weights['BW'] +
-                    row['WW'] / float(industryRow["WW"][1])* weights['WW'] +
-                    row['YW'] / float(industryRow["YW"][1])* weights['YW'] +
-                    row['MK'] / float(industryRow["MK"][1])* weights['MK'] +
-                    row['TM'] / float(industryRow["TM"][1])* weights['TM'] +
-                    row['Growth'] / float(industryRow["Growth"][1])* weights['Growth']
+                    row['CED'] / float(industryRowHigh["CED"][1]) * weights['CED'] +
+                    (float(industryRowHigh.loc[1, "BW"]) - row['BW']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * weights['BW'] +
+                    row['WW'] / float(industryRowHigh["WW"][1])* weights['WW'] +
+                    row['YW'] / float(industryRowHigh["YW"][1])* weights['YW'] +
+                    row['MK'] / float(industryRowHigh["MK"][1])* weights['MK'] +
+                    row['TM'] / float(industryRowHigh["TM"][1])* weights['TM'] +
+                    row['Growth'] / float(industryRowHigh["Growth"][1])* weights['Growth']
                 )
                 return composite_score
 
@@ -190,5 +194,36 @@ def clean_and_modify_CattlemaxDfs(df):
     
     return(df)
 
+
+def find_percentile_for_epd(value, epd_column, df):
+    """
+    Given a number and an EPD column name, return the industry percentile rank based on the input DataFrame.
+    
+    Args:
+        value (float): The value of the EPD.
+        epd_column (str): The EPD column to search (e.g., 'CED', 'BW', 'WW').
+        df (pd.DataFrame): The DataFrame containing percentile ranks.
+
+    Returns:
+        str: The corresponding percentile rank or a message if value is out of bounds.
+    """
+    # Percentile rows typically start from the row with 1% and go downwards
+    percentiles = df.iloc[4:]  # Exclude the first rows like 'Num Animals', 'High', 'Average', etc.
+
+    # Convert the EPD column to numeric (handling any non-numeric values gracefully)
+    percentiles[epd_column] = pd.to_numeric(percentiles[epd_column], errors='coerce')
+
+    # If the value is higher than the highest recorded, return the 1% rank
+    if value >= percentiles[epd_column].max():
+        return '1%'
+    # If the value is lower than the lowest recorded, return the 95% rank
+    elif value <= percentiles[epd_column].min():
+        return '95%'
+    
+    for index, row in percentiles.iterrows():
+        if value >= row[epd_column]:
+            return row['Categories']  # Return the percentile rank (like 1%, 2%, etc.)
+
+    return "Percentile rank not found."
 
 

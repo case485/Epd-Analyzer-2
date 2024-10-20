@@ -46,19 +46,21 @@ def show():
                 # Load your dataframe
                 # Define a function to calculate composite score
                 columns_with_underscore = [col for col in df.columns if '_' in col]
-                industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
                 for col in columns_with_underscore:
                     df[col] = pd.to_numeric(df[col], errors='coerce') 
                     
                 def calculate_composite_score(row):
                     composite_score = (
-                        row['CED_EPD'] /  float(industryRow["CED"][1])* row['CED_ACC'] +
-                        row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
-                        row['WW_EPD'] / float(industryRow["WW"][1])* row['WW_ACC'] +
-                        row['YW_EPD'] / float(industryRow["YW"][1]) * row['YW_ACC'] +
-                        row['Milk_EPD'] / float(industryRow["MK"][1])* row['Milk_ACC'] +
-                        row['TM_EPD'] / float(industryRow["TM"][1])+
-                        row['Growth_EPD'] / float(industryRow["Growth"][1])
+                        row['CED_EPD'] /  float(industryRowHigh["CED"][1])* row['CED_ACC'] +
+                        # row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
+                        (float(industryRowHigh.loc[1, "BW"]) - row['BW_EPD']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * row['BW_ACC'] +
+                        row['WW_EPD'] / float(industryRowHigh["WW"][1])* row['WW_ACC'] +
+                        row['YW_EPD'] / float(industryRowHigh["YW"][1]) * row['YW_ACC'] +
+                        row['Milk_EPD'] / float(industryRowHigh["MK"][1])* row['Milk_ACC'] +
+                        row['TM_EPD'] / float(industryRowHigh["TM"][1])+
+                        row['Growth_EPD'] / float(industryRowHigh["Growth"][1])
                     )
                     composite_score = round(composite_score, 2)
                     return composite_score
