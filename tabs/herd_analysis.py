@@ -5,8 +5,8 @@ import plotly.express as px
 def show():
     topCol1, topCol2, topCol3 = st.columns(3, gap="large")
     with topCol1:
-        st.title("Herd Pipeline Analysis")
-    with topCol3:
+        st.title("Culling Analysis")
+    with topCol2:
         cowCatagory = st.radio(
                 "Cattle Type for Analysis",
                 ["Active_Sires", "Active_Dams", "Non_Parents"],
@@ -65,6 +65,9 @@ def show():
         comparison_df["Std Dev"] = comparison_df["Std Dev"].map(lambda x: round(x, 2))
         #FIX Add pie chart
         comparison_df.to_pickle(f"datafiles/herd_analysis_comparison_df_{catagory}.pkl")
+        
+        
+        
         epdsForPie = comparison_df.index
         herd_avgs = comparison_df['Herd Avgs']
 
@@ -87,14 +90,14 @@ def show():
     #FIX adding test section here: 
     
     st.markdown("---")
-    col1, col2, col3 = st.columns([0.1, 0.4, 0.5], gap="large")
+    col1, col2, col3 = st.columns([0.2, 0.4, 0.5], gap="large")
     # List of EPD columns to create sliders for
     epd_columns = ['CED', 'BW', 'WW', 'YW', 'TM', 'MK', "Composite Score"]
     # Create a dictionary to store the selected registration numbers
     selected_registration_numbers = {}
     # Loop through each EPD column to create a slider
     with col1:
-        st.write("Select Number of Cattle to Bull Based on Lowest EPD")
+        st.write("Select Number of Cattle to Cull Based on EPD")
         for epd in epd_columns:
             # Slider to select the number of rows with the lowest values for the current EPD
             slider_value = st.slider(f"{epd}", 0, scenarioDf.shape[0], 0)
@@ -126,39 +129,21 @@ def show():
         activeSiresDf = scenarioDf[(scenarioDf['Type or Sex'] == 'B') & (df['Age'] >= 2)]
         st.write(f"Sires (Total : {activeSiresDf.shape[0]})")
         st.dataframe(sires_styled_comparison_df)
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
+       
         
         st.write(f"Sires DF Type: {type(sires_styled_comparison_df)}")
         activeDamsDf = scenarioDf[(scenarioDf['Type or Sex'] == 'C') & (df['Age'] >= 2)]
         st.write(f"Dams (Total : {activeDamsDf.shape[0]})")
         st.dataframe(dams_styled_comparison_df)
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
-        st.write("")
+     
         nonParentDf = scenarioDf[scenarioDf['Age'] < 2]
         st.write(f"Non-Parents (Total : {nonParentDf.shape[0]})")
         st.dataframe(non_parents_styled_comparison_df)
         
-    with col2:
-        st.plotly_chart(siresFig)
-        st.plotly_chart(damsFig)
-        st.plotly_chart(nonParentsFig)
+    # with col2:
+        # st.plotly_chart(siresFig)
+        # st.plotly_chart(damsFig)
+        # st.plotly_chart(nonParentsFig)
     
 
      

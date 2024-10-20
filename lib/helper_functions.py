@@ -134,7 +134,7 @@ def epd_composite_score_app(df):
                 return composite_score
 
             # Sidebar sliders to adjust weights
-            st.sidebar.header("Adjust Weights for EPD Traits")
+            st.sidebar.write("### Adjust Weights for Compsite Score")
 
             weights = {
                 'CED': st.sidebar.slider('CED Weight', 0.0, 2.0, 1.0, .5),

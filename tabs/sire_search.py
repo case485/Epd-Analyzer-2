@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import streamlit as st
 from lib.helper_functions import *
+import plotly.express as px
 
 def show():
     def searchSoup(soup):
@@ -77,7 +78,7 @@ def show():
 
 
 
-    def buildSearchQuery ():
+    def buildSearchQuery (options, formatted_sliderValue):
         # Define the search form
         #Get industry Data: 
         minced = ""
@@ -87,22 +88,7 @@ def show():
         mintm = ""
         minmilk = ""
         mingrowth = ""
-        options = st.multiselect(
-            "Select EPD(s) to optimize Bull Selection with:",
-            ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
-            ["TM"],
-        )
-        #FIX add slideer bar for getting top X percent of results
         
-        custom_values = list(range(1, 6)) + list(range(10, 96, 5))
-
-        # Create the slider using this list of custom values
-        slider_value = st.select_slider(
-            "Select the Percentile Rank you would like to use for your search:",
-            options=custom_values,
-            value=5,
-        )
-        formatted_sliderValue = f"{slider_value}%"
         
         
         for option in options:
@@ -139,6 +125,7 @@ def show():
                 "mintm": mintm,
                 "mingrowth": mingrowth,
                 "animal_sex": "B",
+                "rows": 500,
             }
             # Filter out empty parameters
             params = {k: v for k, v in params.items() if v}
@@ -155,10 +142,44 @@ def show():
             except requests.RequestException as e:
                 st.error(f"Error fetching results: {e}")
                 return None
+   
+   
+    options = st.multiselect(
+                "Select EPD(s) to optimize Bull Selection with:",
+                ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
+                ["TM"],
+            )
+    custom_values = list(range(1, 6)) + list(range(10, 96, 5))
+    # Create the slider using this list of custom values
+    slider_value = st.select_slider(
+        "Select the Percentile Rank you would like to use for your search:",
+        options=custom_values,
+        value=5,
+    )
+    formatted_sliderValue = f"{slider_value}%"
 
-
-    soup = buildSearchQuery()
-    if soup:
+    sireSearchButton = st.button("Search Sire Database")
+    if sireSearchButton:
+        soup = buildSearchQuery(options, formatted_sliderValue)
         df = searchSoup(soup)
         df = epd_composite_score_app(df)
         st.dataframe(df)
+        
+        
+        
+        melted_df = df.melt(id_vars=["Name", "Composite Score"], 
+                    value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
+                    var_name="EPD Type", value_name="EPD Value")
+
+        # Create the line plot
+        fig = px.line(melted_df, x="EPD Type", y="EPD Value", color="Name", markers=True)
+        fig.update_layout(width=1500)
+        # Plot in Streamlit
+        st.plotly_chart(fig)
+        
+        fig = px.scatter(df, x="Name", y="Composite Score",hover_data="Registration", color="Name")
+
+        # Adjust the figure size (optional)
+        fig.update_layout(width=1500)
+        # Plot in Streamlit
+        st.plotly_chart(fig)

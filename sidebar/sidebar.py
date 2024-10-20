@@ -8,7 +8,7 @@ def show_sidebar():
     st.sidebar.title("Sidebar Options")
     st.session_state.cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")
     placeholder = st.sidebar.empty()
-    st.sidebar.subheader("Industry Metrics Status")
+    # st.sidebar.subheader("Industry Metrics Status")
     #If file exists then print success
     if os.path.exists(INDUSTRY_PERCENTILE_FILE):
         placeholder.info(f"Industry File Status: :white_check_mark:")
