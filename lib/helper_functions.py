@@ -108,15 +108,28 @@ def extract_IndustryPercentileRankTables_from_pdf():
 def epd_composite_score_app(df):
             # Load your dataframe
             # Define a function to calculate composite score
+            
             def calculate_composite_score(row, weights):
+                #FIX - need to normalize each epd by dividing by the max value of each trait
+                if row['Designation'] == "Bull":
+                    industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                elif row['Designation'] == "Dam":
+                    industryRow = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                elif row['Designation'] == "Non-Parent":
+                    industryRow = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                elif row['Designation'] == "Steer":
+                    industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                else:
+                    st.error(f"Unknown designation: {row['Designation']}")
+                
                 composite_score = (
-                    row['CED'] * weights['CED'] +
-                    row['BW'] * weights['BW'] +
-                    row['WW'] * weights['WW'] +
-                    row['YW'] * weights['YW'] +
-                    row['MK'] * weights['MK'] +
-                    row['TM'] * weights['TM'] +
-                    row['Growth'] * weights['Growth']
+                    row['CED'] / float(industryRow["CED"][1]) * weights['CED'] +
+                    row['BW'] / float(industryRow["BW"][1])* weights['BW'] +
+                    row['WW'] / float(industryRow["WW"][1])* weights['WW'] +
+                    row['YW'] / float(industryRow["YW"][1])* weights['YW'] +
+                    row['MK'] / float(industryRow["MK"][1])* weights['MK'] +
+                    row['TM'] / float(industryRow["TM"][1])* weights['TM'] +
+                    row['Growth'] / float(industryRow["Growth"][1])* weights['Growth']
                 )
                 return composite_score
 
@@ -124,13 +137,13 @@ def epd_composite_score_app(df):
             st.sidebar.header("Adjust Weights for EPD Traits")
 
             weights = {
-                'CED': st.sidebar.slider('CED Weight', 0.0, 0.5, 1.0),
-                'BW': st.sidebar.slider('BW Weight', 0.0, 0.5, 1.0),
-                'WW': st.sidebar.slider('WW Weight', 0.0, 0.5, 1.0),
-                'YW': st.sidebar.slider('YW Weight', 0.0, 0.5, 1.0),
-                'MK': st.sidebar.slider('Milk Weight', 0.0, 0.5, 1.0),
-                'TM': st.sidebar.slider('Total Maternal Weight', 0.0, 0.5, 1.0),
-                'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 0.5, 1.0),
+                'CED': st.sidebar.slider('CED Weight', 0.0, 2.0, 1.0, .5),
+                'BW': st.sidebar.slider('BW Weight', 0.0, 2.0, 1.0, .5),
+                'WW': st.sidebar.slider('WW Weight', 0.0, 2.0, 1.0, .5),
+                'YW': st.sidebar.slider('YW Weight', 0.0, 2.0, 1.0, .5),
+                'MK': st.sidebar.slider('Milk Weight', 0.0, 2.0, 1.0, .5),
+                'TM': st.sidebar.slider('Total Maternal Weight', 0.0, 2.0, 1.0, .5),
+                'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 2.0, 1.0, .5),
             }
 
             df['Composite Score'] = df.apply(calculate_composite_score, axis=1, weights=weights)

@@ -40,6 +40,43 @@ def show():
         df = df.applymap(lambda x: x.replace('>', '').replace('<', ''))
         return df
 
+
+    def epd_composite_score_app(df):
+                # Load your dataframe
+                # Define a function to calculate composite score
+                columns_with_underscore = [col for col in df.columns if '_' in col]
+                industryRow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                for col in columns_with_underscore:
+                    df[col] = pd.to_numeric(df[col], errors='coerce') 
+                    
+                def calculate_composite_score(row):
+                    composite_score = (
+                        row['CED_EPD'] /  float(industryRow["CED"][1])* row['CED_ACC'] +
+                        row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
+                        row['WW_EPD'] / float(industryRow["WW"][1])* row['WW_ACC'] +
+                        row['YW_EPD'] / float(industryRow["YW"][1]) * row['YW_ACC'] +
+                        row['Milk_EPD'] / float(industryRow["MK"][1])* row['Milk_ACC'] +
+                        row['TM_EPD'] / float(industryRow["TM"][1])+
+                        row['Growth_EPD'] / float(industryRow["Growth"][1])
+                    )
+                    composite_score = round(composite_score, 2)
+                    return composite_score
+                df['Composite Score'] = df.apply(calculate_composite_score, axis=1)
+                df_sorted = df.sort_values(by='Composite Score',ascending=False)
+                return(df_sorted)
+
+
+
+
+
+
+
+
+
+
+
+
+
     def buildSearchQuery ():
         # Define the search form
         #Get industry Data: 
@@ -52,15 +89,26 @@ def show():
         mingrowth = ""
         options = st.multiselect(
             "Select EPD(s) to optimize Bull Selection with:",
-            ["CED", "BW", "WW", "YW","TM", "MK", "Growth"],
+            ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
             ["TM"],
         )
+        #FIX add slideer bar for getting top X percent of results
+        
+        custom_values = list(range(1, 6)) + list(range(10, 96, 5))
 
-        st.write("You selected:", options)
+        # Create the slider using this list of custom values
+        slider_value = st.select_slider(
+            "Select the Percentile Rank you would like to use for your search:",
+            options=custom_values,
+            value=5,
+        )
+        formatted_sliderValue = f"{slider_value}%"
+        
+        
         for option in options:
             epd = option
             
-            value = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == '5%'][epd].values[0]
+            value = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == formatted_sliderValue][epd].values[0]
             st.write(f"You selected: {epd} {value}")
             if epd == "CED":
                 minced = value
@@ -72,7 +120,7 @@ def show():
                 minywt = value
             elif epd == "TM":
                 mintm = value
-            elif epd == "MK":
+            elif epd == "Milk":
                 minmilk = value
             elif epd == "Growth":
                 mingrowth = value
@@ -92,7 +140,6 @@ def show():
                 "mingrowth": mingrowth,
                 "animal_sex": "B",
             }
-            st.write(f"Query Parameters: {params}")
             # Filter out empty parameters
             params = {k: v for k, v in params.items() if v}
             # Simulate the API request (replace with actual API endpoint)
@@ -113,4 +160,5 @@ def show():
     soup = buildSearchQuery()
     if soup:
         df = searchSoup(soup)
+        df = epd_composite_score_app(df)
         st.dataframe(df)
