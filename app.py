@@ -1,5 +1,5 @@
 import streamlit as st
-from tabs import home, herd_analysis, visualizations, individual_analysis, raw_data, logging, sire_search
+from tabs import culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
 
@@ -31,13 +31,13 @@ with st.session_state.tabs[0]:
 
 if st.session_state.cattleMaxCleanDf is not None or st.session_state.filteredDf is not None:
     with st.session_state.tabs[1]:
-        herd_analysis.show()
+        culling.show()
 
     with st.session_state.tabs[2]:
         visualizations.show()
 
     with st.session_state.tabs[3]:
-        individual_analysis.show()
+        topAndBottom.show()
 
     with st.session_state.tabs[4]:
         sire_search.show()

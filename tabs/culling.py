@@ -7,7 +7,7 @@ def show():
     with topCol1:
         st.title("Culling Analysis")
     with topCol2:
-        cowCatagory = st.radio(
+        cowCatagory = st.selectbox(
                 "Cattle Type for Analysis",
                 ["Active_Sires", "Active_Dams", "Non_Parents"],
             )
@@ -63,7 +63,6 @@ def show():
         # Ensure the rounding is applied consistently
         comparison_df["Herd Avgs"] = comparison_df["Herd Avgs"].map(lambda x: round(x, 2))
         comparison_df["Std Dev"] = comparison_df["Std Dev"].map(lambda x: round(x, 2))
-        #FIX Add pie chart
         comparison_df.to_pickle(f"datafiles/herd_analysis_comparison_df_{catagory}.pkl")
         
         def apply_percentile_by_mapping(row, df, mapping):
@@ -86,16 +85,21 @@ def show():
         def highlight_cells(data):
             styled_data = pd.DataFrame('', index=data.index, columns=data.columns)
             for row in data.index:
-                if pd.to_numeric(data.at[row, 'Herd Avgs']) > pd.to_numeric(data.at[row, 'Industry Avg']):
+                rank = float(data.at[row, 'Industry Rank'].strip('%'))
+                if rank <= 50:
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: green'
+                    styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: green'
+                elif rank > 50 and rank < 75:
+                    styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: yellow'
+                    styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: yellow'
                 else:
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: red'
+                    styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: red'
             return styled_data
         
         styled_comparison_df = comparison_df.style.apply(highlight_cells, axis=None).format(precision=2)
         return (styled_comparison_df, fig)
 
-    #FIX adding test section here: 
     
     st.markdown("---")
     col1, col2, col3 = st.columns([0.2, 0.4, 0.5], gap="large")
@@ -113,16 +117,13 @@ def show():
             if slider_value > 0:
                 lowest_values_df = scenarioDf.nsmallest(slider_value, epd)
                 selected_registration_numbers[epd] = lowest_values_df['Registration Number'].tolist()
-    # Display the selected registration numbers for each EPD
-    cullList = []
-    for epd, reg_numbers in selected_registration_numbers.items():
-        st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
-        for reg_number in reg_numbers:
-            cullList.append(reg_number)
-    with col1: 
-        st.write(f"Cull List: {cullList}")
-    #DEBUG Now remove all cullList cows from the scenarioDF
-    # st.session_state.filteredDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
+        # Display the selected registration numbers for each EPD
+        cullList = []
+        for epd, reg_numbers in selected_registration_numbers.items():
+            st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
+            for reg_number in reg_numbers:
+                cullList.append(reg_number)
+
     scenarioDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
     #Sires
     sires_styled_comparison_df, siresFig = compare_sires_epds_with_industry(scenarioDf, st.session_state.activeSiresPercentileRankDf, "Sires")
@@ -135,7 +136,6 @@ def show():
     
     with col3:
         if cowCatagory == "Active_Sires":
-            st.write("You selected Sires.")
             activeSiresDf = scenarioDf[(scenarioDf['Type or Sex'] == 'B') & (df['Age'] >= 2)]
             st.write(f"Sires (Total : {activeSiresDf.shape[0]})")
             st.write (f"Type of dataframe: {type(sires_styled_comparison_df)}")

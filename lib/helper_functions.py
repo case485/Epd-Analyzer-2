@@ -214,15 +214,27 @@ def find_percentile_for_epd(value, epd_column, df):
     percentiles[epd_column] = pd.to_numeric(percentiles[epd_column], errors='coerce')
 
     # If the value is higher than the highest recorded, return the 1% rank
-    if value >= percentiles[epd_column].max():
-        return '1%'
-    # If the value is lower than the lowest recorded, return the 95% rank
-    elif value <= percentiles[epd_column].min():
-        return '95%'
-    
-    for index, row in percentiles.iterrows():
-        if value >= row[epd_column]:
-            return row['Categories']  # Return the percentile rank (like 1%, 2%, etc.)
+    if epd_column == 'BW':
+        if value  >= percentiles[epd_column].max():
+            st.write(f"Looking at BW , the max is {percentiles[epd_column].max()}")
+            return '95%'
+        # If the value is lower than the lowest recorded, return the 95% rank
+        elif value < percentiles[epd_column].min():
+            return '1%'
+        
+        for index, row in percentiles.iterrows():
+            if value <= row[epd_column]:
+                return row['Categories']
+    else: 
+        if value >= percentiles[epd_column].max():
+            return '1%'
+        # If the value is lower than the lowest recorded, return the 95% rank
+        elif value <= percentiles[epd_column].min():
+            return '95%'
+        
+        for index, row in percentiles.iterrows():
+            if value >= row[epd_column]:
+                return row['Categories']  # Return the percentile rank (like 1%, 2%, etc.)
 
     return "Percentile rank not found."
 

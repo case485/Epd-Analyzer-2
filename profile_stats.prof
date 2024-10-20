@@ -1,0 +1,304 @@
+         8559 function calls (8430 primitive calls) in 0.006 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        7    0.000    0.000    0.003    0.000 delta_generator.py:880(_enqueue_message)
+        7    0.000    0.000    0.003    0.000 script_run_context.py:116(enqueue)
+        7    0.000    0.000    0.003    0.000 script_runner.py:307(_enqueue_forward_msg)
+        1    0.000    0.000    0.002    0.002 slider.py:165(slider)
+        1    0.000    0.000    0.002    0.002 slider.py:348(_slider)
+        1    0.000    0.000    0.002    0.002 write.py:217(write)
+        1    0.000    0.000    0.002    0.002 write.py:354(flush_buffer)
+        6    0.000    0.000    0.002    0.000 metrics_util.py:242(_get_command_telemetry)
+        7    0.000    0.000    0.001    0.000 base.py:272(send)
+        1    0.000    0.000    0.001    0.001 markdown.py:33(markdown)
+        7    0.001    0.000    0.001    0.000 delta_generator.py:232(__init__)
+        3    0.000    0.000    0.001    0.000 base_events.py:1910(_run_once)
+        6    0.000    0.000    0.001    0.000 inspect.py:1352(getfullargspec)
+       16    0.000    0.000    0.001    0.000 events.py:86(_run)
+    86/71    0.000    0.000    0.001    0.000 python_message.py:498(init)
+        6    0.000    0.000    0.001    0.000 inspect.py:2491(_signature_from_callable)
+        6    0.000    0.000    0.001    0.000 inspect.py:2387(_signature_from_function)
+       16    0.000    0.000    0.000    0.000 {method 'run' of '_contextvars.Context' objects}
+        1    0.000    0.000    0.000    0.000 button.py:68(button)
+        1    0.000    0.000    0.000    0.000 button.py:692(_button)
+        1    0.000    0.000    0.000    0.000 empty.py:26(empty)
+        1    0.000    0.000    0.000    0.000 checkbox.py:55(checkbox)
+       42    0.000    0.000    0.000    0.000 python_message.py:746(getter)
+        5    0.000    0.000    0.000    0.000 app_session.py:475(<lambda>)
+        1    0.000    0.000    0.000    0.000 checkbox.py:261(_checkbox)
+      107    0.000    0.000    0.000    0.000 python_message.py:697(field_setter)
+        1    0.000    0.000    0.000    0.000 select_slider.py:101(select_slider)
+     2233    0.000    0.000    0.000    0.000 {built-in method builtins.callable}
+        5    0.000    0.000    0.000    0.000 widgets.py:86(register_widget)
+        5    0.000    0.000    0.000    0.000 app_session.py:480(_handle_scriptrunner_event_on_event_loop)
+       36    0.000    0.000    0.000    0.000 python_message.py:450(MakeSubMessageDefault)
+        1    0.000    0.000    0.000    0.000 select_slider.py:239(_select_slider)
+        5    0.000    0.000    0.000    0.000 app_session.py:258(_enqueue_forward_msg)
+        5    0.000    0.000    0.000    0.000 widgets.py:166(register_widget_from_metadata)
+        7    0.000    0.000    0.000    0.000 message.py:117(CopyFrom)
+        5    0.000    0.000    0.000    0.000 common.py:176(compute_widget_id)
+       64    0.000    0.000    0.000    0.000 inspect.py:2733(__init__)
+    26/22    0.000    0.000    0.000    0.000 python_message.py:1309(MergeFrom)
+        5    0.000    0.000    0.000    0.000 safe_session_state.py:51(register_widget)
+      661    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+     13/9    0.000    0.000    0.000    0.000 base_events.py:838(call_soon_threadsafe)
+        7    0.000    0.000    0.000    0.000 app_session.py:459(_on_scriptrunner_event)
+        5    0.000    0.000    0.000    0.000 session_state.py:592(register_widget)
+       13    0.000    0.000    0.000    0.000 containers.py:207(__setitem__)
+       44    0.000    0.000    0.000    0.000 {built-in method builtins.setattr}
+       96    0.000    0.000    0.000    0.000 type_checkers.py:207(CheckValue)
+     13/9    0.000    0.000    0.000    0.000 selector_events.py:141(_write_to_self)
+   101/65    0.000    0.000    0.000    0.000 python_message.py:1444(Modified)
+        5    0.000    0.000    0.000    0.000 forward_msg_queue.py:54(enqueue)
+        5    0.000    0.000    0.000    0.000 runtime.py:721(_enqueued_some_message)
+      107    0.000    0.000    0.000    0.000 python_message.py:1489(__init__)
+    96/89    0.000    0.000    0.000    0.000 {built-in method builtins.getattr}
+       15    0.000    0.000    0.000    0.000 containers.py:272(add)
+        7    0.000    0.000    0.000    0.000 _utilities.py:112(is_coroutine_function)
+    85/64    0.000    0.000    0.000    0.000 python_message.py:1508(Modified)
+       54    0.000    0.000    0.000    0.000 type_checkers.py:161(CheckValue)
+        7    0.000    0.000    0.000    0.000 coroutines.py:20(iscoroutinefunction)
+        3    0.000    0.000    0.000    0.000 selectors.py:319(select)
+        7    0.000    0.000    0.000    0.000 python_message.py:1372(_Clear)
+        6    0.000    0.000    0.000    0.000 inspect.py:3019(__init__)
+       15    0.000    0.000    0.000    0.000 metrics_util.py:202(_get_type_name)
+       15    0.000    0.000    0.000    0.000 metrics_util.py:230(_get_arg_metadata)
+      259    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+       14    0.000    0.000    0.000    0.000 base.py:375(receivers_for)
+     21/7    0.000    0.000    0.000    0.000 python_message.py:1533(Modified)
+        1    0.000    0.000    0.000    0.000 runtime.py:576(_loop_coroutine)
+     12/4    0.000    0.000    0.000    0.000 {method 'send' of '_socket.socket' objects}
+       16    0.000    0.000    0.000    0.000 form.py:67(current_form_id)
+       10    0.000    0.000    0.000    0.000 session_state.py:390(__getitem__)
+      308    0.000    0.000    0.000    0.000 {method 'items' of 'mappingproxy' objects}
+       17    0.000    0.000    0.000    0.000 base_events.py:814(_call_soon)
+        2    0.000    0.000    0.000    0.000 selector_events.py:129(_read_from_self)
+        7    0.000    0.000    0.000    0.000 inspect.py:421(iscoroutinefunction)
+       18    0.000    0.000    0.000    0.000 python_message.py:644(getter)
+        7    0.000    0.000    0.000    0.000 __init__.py:37(save_element_message)
+      179    0.000    0.000    0.000    0.000 {method 'encode' of 'str' objects}
+       12    0.000    0.000    0.000    0.000 config.py:130(get_option)
+        2    0.000    0.000    0.000    0.000 type_util.py:666(ensure_indexable)
+       16    0.000    0.000    0.000    0.000 form.py:38(_current_form)
+        3    0.000    0.000    0.000    0.000 selectors.py:313(_select)
+       64    0.000    0.000    0.000    0.000 enum.py:726(__call__)
+        4    0.000    0.000    0.000    0.000 {method 'recv' of '_socket.socket' objects}
+      184    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        5    0.000    0.000    0.000    0.000 utils.py:46(check_callback_rules)
+        3    0.000    0.000    0.000    0.000 {built-in method select.select}
+        6    0.000    0.000    0.000    0.000 containers.py:178(MergeFrom)
+        5    0.000    0.000    0.000    0.000 session_state.py:631(__contains__)
+        5    0.000    0.000    0.000    0.000 forward_msg_queue.py:96(_is_composable_message)
+       12    0.000    0.000    0.000    0.000 script_runner.py:328(_maybe_handle_execution_control_request)
+       31    0.000    0.000    0.000    0.000 python_message.py:853(HasField)
+       64    0.000    0.000    0.000    0.000 <frozen _collections_abc>:1022(__iter__)
+       13    0.000    0.000    0.000    0.000 {method 'extend' of 'list' objects}
+       19    0.000    0.000    0.000    0.000 script_run_context.py:188(get_script_run_ctx)
+       14    0.000    0.000    0.000    0.000 cached_message_replay.py:277(save_element_message)
+       31    0.000    0.000    0.000    0.000 <frozen abc>:117(__instancecheck__)
+       19    0.000    0.000    0.000    0.000 python_message.py:442(MakeRepeatedScalarDefault)
+       36    0.000    0.000    0.000    0.000 __init__.py:31(exists)
+       21    0.000    0.000    0.000    0.000 python_message.py:1524(__init__)
+        6    0.000    0.000    0.000    0.000 inspect.py:176(get_annotations)
+      203    0.000    0.000    0.000    0.000 {built-in method builtins.len}
+      117    0.000    0.000    0.000    0.000 {built-in method builtins.hasattr}
+      133    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 type_util.py:633(ensure_iterable)
+        7    0.000    0.000    0.000    0.000 form.py:80(is_in_form)
+        6    0.000    0.000    0.000    0.000 metrics_util.py:222(_get_top_level_module)
+        7    0.000    0.000    0.000    0.000 __init__.py:87(maybe_show_cached_st_function_warning)
+        7    0.000    0.000    0.000    0.000 inspect.py:385(_has_code_flag)
+       70    0.000    0.000    0.000    0.000 inspect.py:3066(<genexpr>)
+       10    0.000    0.000    0.000    0.000 session_state.py:402(_getitem)
+        7    0.000    0.000    0.000    0.000 cursor.py:83(delta_path)
+        5    0.000    0.000    0.000    0.000 hashlib.py:152(__hash_new)
+       31    0.000    0.000    0.000    0.000 {built-in method _abc._abc_instancecheck}
+        1    0.000    0.000    0.000    0.000 tasks.py:435(wait)
+       31    0.000    0.000    0.000    0.000 threading.py:1483(current_thread)
+       17    0.000    0.000    0.000    0.000 events.py:36(__init__)
+      6/5    0.000    0.000    0.000    0.000 copy.py:118(deepcopy)
+        2    0.000    0.000    0.000    0.000 tasks.py:412(create_task)
+        2    0.000    0.000    0.000    0.000 type_util.py:284(is_snowpark_or_pyspark_data_object)
+       83    0.000    0.000    0.000    0.000 {method 'update' of '_hashlib.HASH' objects}
+       66    0.000    0.000    0.000    0.000 {method 'setdefault' of 'dict' objects}
+      107    0.000    0.000    0.000    0.000 {built-in method _weakref.proxy}
+        6    0.000    0.000    0.000    0.000 __init__.py:669(update)
+        5    0.000    0.000    0.000    0.000 {built-in method _hashlib.new}
+       19    0.000    0.000    0.000    0.000 containers.py:132(__init__)
+       14    0.000    0.000    0.000    0.000 cached_message_replay.py:377(maybe_show_cached_st_function_warning)
+       21    0.000    0.000    0.000    0.000 delta_generator.py:397(id)
+        6    0.000    0.000    0.000    0.000 cursor.py:143(get_locked_cursor)
+        7    0.000    0.000    0.000    0.000 _utilities.py:54(hashable_identity)
+        7    0.000    0.000    0.000    0.000 inspect.py:406(_has_coroutine_mark)
+        2    0.000    0.000    0.000    0.000 base_events.py:451(create_task)
+        6    0.000    0.000    0.000    0.000 python_message.py:436(MakeRepeatedMessageDefault)
+       26    0.000    0.000    0.000    0.000 alert.py:158(dg)
+       64    0.000    0.000    0.000    0.000 {method 'isidentifier' of 'str' objects}
+        5    0.000    0.000    0.000    0.000 base_events.py:785(call_soon)
+        5    0.000    0.000    0.000    0.000 python_message.py:1355(WhichOneof)
+        2    0.000    0.000    0.000    0.000 type_util.py:292(is_snowpark_data_object)
+       10    0.000    0.000    0.000    0.000 type_util.py:175(is_type)
+       12    0.000    0.000    0.000    0.000 script_runner.py:303(_is_in_script_thread)
+        1    0.000    0.000    0.000    0.000 string_util.py:34(clean_text)
+       34    0.000    0.000    0.000    0.000 inspect.py:300(ismethod)
+        7    0.000    0.000    0.000    0.000 delta_generator.py:305(_active_dg)
+        5    0.000    0.000    0.000    0.000 __init__.py:74(save_widget_metadata)
+        6    0.000    0.000    0.000    0.000 inspect.py:982(getmodule)
+      128    0.000    0.000    0.000    0.000 inspect.py:2786(name)
+       64    0.000    0.000    0.000    0.000 containers.py:91(__getitem__)
+       64    0.000    0.000    0.000    0.000 enum.py:1129(__new__)
+       10    0.000    0.000    0.000    0.000 type_checkers.py:142(CheckValue)
+       21    0.000    0.000    0.000    0.000 python_message.py:1459(_UpdateOneofState)
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.all}
+       64    0.000    0.000    0.000    0.000 {method '__contains__' of 'frozenset' objects}
+       22    0.000    0.000    0.000    0.000 python_message.py:688(getter)
+        9    0.000    0.000    0.000    0.000 enum_type_wrapper.py:115(__getattr__)
+       51    0.000    0.000    0.000    0.000 python_message.py:1408(_SetListener)
+      121    0.000    0.000    0.000    0.000 inspect.py:2794(annotation)
+        4    0.000    0.000    0.000    0.000 utils.py:89(get_label_visibility_proto_value)
+        2    0.000    0.000    0.000    0.000 {method 'set_result' of '_asyncio.Future' objects}
+        1    0.000    0.000    0.000    0.000 tasks.py:534(_on_completion)
+        7    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:1390(_handle_fromlist)
+        5    0.000    0.000    0.000    0.000 {method 'hexdigest' of '_hashlib.HASH' objects}
+       10    0.000    0.000    0.000    0.000 session_state.py:91(__getitem__)
+        1    0.000    0.000    0.000    0.000 textwrap.py:419(dedent)
+      112    0.000    0.000    0.000    0.000 inspect.py:2790(default)
+        7    0.000    0.000    0.000    0.000 cursor.py:23(make_delta_path)
+       12    0.000    0.000    0.000    0.000 config_option.py:223(value)
+        6    0.000    0.000    0.000    0.000 <string>:1(<lambda>)
+       50    0.000    0.000    0.000    0.000 python_message.py:567(_GetFieldByName)
+       10    0.000    0.000    0.000    0.000 session_state.py:357(_reverse_key_wid_map)
+        6    0.000    0.000    0.000    0.000 containers.py:254(__init__)
+        2    0.000    0.000    0.000    0.000 locks.py:199(wait)
+       10    0.000    0.000    0.000    0.000 type_util.py:207(get_fqn_type)
+        1    0.000    0.000    0.000    0.000 futures.py:311(_set_result_unless_cancelled)
+        5    0.000    0.000    0.000    0.000 session_state.py:574(_set_widget_metadata)
+        5    0.000    0.000    0.000    0.000 common.py:204(user_key_from_widget_id)
+       11    0.000    0.000    0.000    0.000 {method 'split' of 'str' objects}
+       37    0.000    0.000    0.000    0.000 {built-in method builtins.id}
+       31    0.000    0.000    0.000    0.000 {built-in method _thread.get_ident}
+        7    0.000    0.000    0.000    0.000 caching.py:279(maybe_show_cached_st_function_warning)
+        7    0.000    0.000    0.000    0.000 base.py:336(_extract_sender)
+       19    0.000    0.000    0.000    0.000 inspect.py:372(isfunction)
+        7    0.000    0.000    0.000    0.000 _saferef.py:215(__call__)
+       15    0.000    0.000    0.000    0.000 inspect.py:296(isclass)
+       36    0.000    0.000    0.000    0.000 runtime.py:153(exists)
+        8    0.000    0.000    0.000    0.000 type_checkers.py:271(CheckValue)
+       64    0.000    0.000    0.000    0.000 inspect.py:2798(kind)
+       25    0.000    0.000    0.000    0.000 containers.py:73(__init__)
+    26/23    0.000    0.000    0.000    0.000 delta_generator.py:323(_main_dg)
+        1    0.000    0.000    0.000    0.000 tasks.py:653(sleep)
+        3    0.000    0.000    0.000    0.000 coroutines.py:32(iscoroutine)
+        1    0.000    0.000    0.000    0.000 tasks.py:522(_wait)
+        3    0.000    0.000    0.000    0.000 slider.py:515(<lambda>)
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.any}
+        7    0.000    0.000    0.000    0.000 <frozen abc>:121(__subclasscheck__)
+       19    0.000    0.000    0.000    0.000 {method 'append' of 'collections.deque' objects}
+       17    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.RLock' objects}
+       10    0.000    0.000    0.000    0.000 session_state.py:583(_get_widget_id)
+       23    0.000    0.000    0.000    0.000 {method 'pop' of 'dict' objects}
+       11    0.000    0.000    0.000    0.000 containers.py:95(__len__)
+       14    0.000    0.000    0.000    0.000 functools.py:421(_unwrap_partial)
+       37    0.000    0.000    0.000    0.000 typing.py:2173(cast)
+        3    0.000    0.000    0.000    0.000 base_events.py:734(time)
+        3    0.000    0.000    0.000    0.000 selector_events.py:750(_process_events)
+        6    0.000    0.000    0.000    0.000 metrics_util.py:293(to_microseconds)
+       16    0.000    0.000    0.000    0.000 {method 'popleft' of 'collections.deque' objects}
+       22    0.000    0.000    0.000    0.000 {method 'get' of '_contextvars.ContextVar' objects}
+       10    0.000    0.000    0.000    0.000 cached_message_replay.py:360(save_widget_metadata)
+       12    0.000    0.000    0.000    0.000 script_requests.py:146(on_scriptrunner_yield)
+        1    0.000    0.000    0.000    0.000 slider.py:438(all_same_type)
+       10    0.000    0.000    0.000    0.000 type_util.py:202(get_fqn)
+       12    0.000    0.000    0.000    0.000 config.py:1259(get_config_options)
+       28    0.000    0.000    0.000    0.000 delta_generator.py:382(_cursor)
+        1    0.000    0.000    0.000    0.000 select_slider.py:264(as_index_list)
+       30    0.000    0.000    0.000    0.000 contextlib.py:446(__exit__)
+        3    0.000    0.000    0.000    0.000 tasks.py:460(<genexpr>)
+        2    0.000    0.000    0.000    0.000 slider.py:430(value_to_generic_type)
+       13    0.000    0.000    0.000    0.000 {built-in method time.perf_counter}
+        1    0.000    0.000    0.000    0.000 utils.py:165(maybe_coerce_enum_sequence)
+        3    0.000    0.000    0.000    0.000 typing.py:392(inner)
+        1    0.000    0.000    0.000    0.000 events.py:155(cancel)
+        6    0.000    0.000    0.000    0.000 {built-in method builtins.max}
+        6    0.000    0.000    0.000    0.000 {built-in method _collections._count_elements}
+        1    0.000    0.000    0.000    0.000 copy.py:191(_deepcopy_list)
+        1    0.000    0.000    0.000    0.000 multiselect.py:99(_get_default_count)
+        1    0.000    0.000    0.000    0.000 {method 'sub' of 're.Pattern' objects}
+        6    0.000    0.000    0.000    0.000 {built-in method __new__ of type object at 0x00007FFA04447A20}
+        7    0.000    0.000    0.000    0.000 {method 'copy' of 'set' objects}
+       12    0.000    0.000    0.000    0.000 {built-in method _contextvars.copy_context}
+       30    0.000    0.000    0.000    0.000 contextlib.py:440(__init__)
+        1    0.000    0.000    0.000    0.000 mixins.py:12(_get_loop)
+        2    0.000    0.000    0.000    0.000 type_util.py:310(is_pyspark_data_object)
+        2    0.000    0.000    0.000    0.000 copy.py:61(copy)
+       19    0.000    0.000    0.000    0.000 base_events.py:539(_check_closed)
+        2    0.000    0.000    0.000    0.000 base_events.py:447(create_future)
+       30    0.000    0.000    0.000    0.000 contextlib.py:443(__enter__)
+       22    0.000    0.000    0.000    0.000 base_events.py:2005(get_debug)
+        2    0.000    0.000    0.000    0.000 _weakrefset.py:85(add)
+        6    0.000    0.000    0.000    0.000 {method 'values' of 'mappingproxy' objects}
+        2    0.000    0.000    0.000    0.000 type_util.py:276(is_dataframe)
+        1    0.000    0.000    0.000    0.000 slider.py:518(<lambda>)
+        7    0.000    0.000    0.000    0.000 {built-in method _abc._abc_subclasscheck}
+        6    0.000    0.000    0.000    0.000 inspect.py:292(ismodule)
+        8    0.000    0.000    0.000    0.000 {built-in method _asyncio.get_running_loop}
+        3    0.000    0.000    0.000    0.000 type_util.py:486(is_iterable)
+        7    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+        1    0.000    0.000    0.000    0.000 util.py:136(index_)
+        1    0.000    0.000    0.000    0.000 multiselect.py:70(_check_and_convert_to_indices)
+        7    0.000    0.000    0.000    0.000 delta_generator.py:858(_value_or_dg)
+        6    0.000    0.000    0.000    0.000 cursor.py:157(__init__)
+        1    0.000    0.000    0.000    0.000 {method 'findall' of 're.Pattern' objects}
+       12    0.000    0.000    0.000    0.000 config_option.py:241(<lambda>)
+        6    0.000    0.000    0.000    0.000 python_message.py:273(_IsMapField)
+       13    0.000    0.000    0.000    0.000 message_listener.py:77(Modified)
+        4    0.000    0.000    0.000    0.000 locks.py:181(set)
+        1    0.000    0.000    0.000    0.000 copy.py:231(_keep_alive)
+        7    0.000    0.000    0.000    0.000 delta_generator.py:129(_maybe_print_use_warning)
+       12    0.000    0.000    0.000    0.000 inspect.py:3083(return_annotation)
+        5    0.000    0.000    0.000    0.000 runtime.py:733(_get_async_objs)
+        8    0.000    0.000    0.000    0.000 cursor.py:188(root_container)
+        4    0.000    0.000    0.000    0.000 type_util.py:1193(maybe_raise_label_warnings)
+        2    0.000    0.000    0.000    0.000 select_slider.py:58(_is_range_value)
+        3    0.000    0.000    0.000    0.000 {built-in method time.monotonic}
+        6    0.000    0.000    0.000    0.000 cursor.py:127(root_container)
+        1    0.000    0.000    0.000    0.000 base_events.py:1895(_add_callback)
+        1    0.000    0.000    0.000    0.000 base_futures.py:13(isfuture)
+        6    0.000    0.000    0.000    0.000 cursor.py:131(parent_path)
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+        5    0.000    0.000    0.000    0.000 copy.py:172(_deepcopy_atomic)
+        1    0.000    0.000    0.000    0.000 events.py:72(cancel)
+        6    0.000    0.000    0.000    0.000 inspect.py:3079(parameters)
+        6    0.000    0.000    0.000    0.000 cursor.py:135(index)
+        1    0.000    0.000    0.000    0.000 utils.py:122(maybe_coerce_enum)
+        1    0.000    0.000    0.000    0.000 utils.py:171(<genexpr>)
+        5    0.000    0.000    0.000    0.000 utils.py:62(check_session_state_rules)
+        2    0.000    0.000    0.000    0.000 js_number.py:44(validate_int_bounds)
+        2    0.000    0.000    0.000    0.000 {method 'add_done_callback' of '_asyncio.Task' objects}
+        2    0.000    0.000    0.000    0.000 type_util.py:685(check_python_comparable)
+        5    0.000    0.000    0.000    0.000 type_util.py:1181(to_key)
+        2    0.000    0.000    0.000    0.000 {method 'copy' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'strip' of 'str' objects}
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.iter}
+        1    0.000    0.000    0.000    0.000 {built-in method _asyncio._get_running_loop}
+        1    0.000    0.000    0.000    0.000 {method 'done' of '_asyncio.Future' objects}
+        1    0.000    0.000    0.000    0.000 selectors.py:275(_key_from_fd)
+        1    0.000    0.000    0.000    0.000 {method 'index' of 'list' objects}
+        2    0.000    0.000    0.000    0.000 selector_events.py:126(_process_self_data)
+        1    0.000    0.000    0.000    0.000 delta_generator.py:393(_is_top_level)
+        1    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'cancelled' of '_asyncio.Future' objects}
+        2    0.000    0.000    0.000    0.000 tasks.py:70(_set_task_name)
+        1    0.000    0.000    0.000    0.000 cursor.py:204(get_locked_cursor)
+        1    0.000    0.000    0.000    0.000 base_events.py:1905(_timer_handle_cancelled)
+        1    0.000    0.000    0.000    0.000 cursor.py:192(parent_path)
+        1    0.000    0.000    0.000    0.000 <string>:2(__init__)
+        1    0.000    0.000    0.000    0.000 cursor.py:196(index)
+      6/0    0.000    0.000    0.000          delta_generator.py:475(_enqueue)
+      6/0    0.000    0.000    0.000          metrics_util.py:356(wrapped_func)
+
+

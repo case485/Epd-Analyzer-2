@@ -2,9 +2,10 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-import streamlit as st
 from lib.helper_functions import *
 import plotly.express as px
+import cProfile
+import pstats
 
 def show():
     def searchSoup(soup):
@@ -41,8 +42,7 @@ def show():
         df = df.applymap(lambda x: x.replace('>', '').replace('<', ''))
         return df
 
-
-    def epd_composite_score_app(df):
+    def epd_composite_score_app(df, includeWeightsToggle):
                 # Load your dataframe
                 # Define a function to calculate composite score
                 columns_with_underscore = [col for col in df.columns if '_' in col]
@@ -51,36 +51,39 @@ def show():
                 for col in columns_with_underscore:
                     df[col] = pd.to_numeric(df[col], errors='coerce') 
                     
-                def calculate_composite_score(row):
-                    composite_score = (
-                        row['CED_EPD'] /  float(industryRowHigh["CED"][1])* row['CED_ACC'] +
-                        # row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
-                        (float(industryRowHigh.loc[1, "BW"]) - row['BW_EPD']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * row['BW_ACC'] +
-                        row['WW_EPD'] / float(industryRowHigh["WW"][1])* row['WW_ACC'] +
-                        row['YW_EPD'] / float(industryRowHigh["YW"][1]) * row['YW_ACC'] +
-                        row['Milk_EPD'] / float(industryRowHigh["MK"][1])* row['Milk_ACC'] +
-                        row['TM_EPD'] / float(industryRowHigh["TM"][1])+
-                        row['Growth_EPD'] / float(industryRowHigh["Growth"][1])
-                    )
-                    composite_score = round(composite_score, 2)
-                    return composite_score
-                df['Composite Score'] = df.apply(calculate_composite_score, axis=1)
+                def calculate_composite_score(row, includeWeights):
+                    if includeWeights == True:
+                        composite_score = (
+                            row['CED_EPD'] /  float(industryRowHigh["CED"][1])* row['CED_ACC'] +
+                            # row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
+                            (float(industryRowHigh.loc[1, "BW"]) - row['BW_EPD']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * row['BW_ACC'] +
+                            row['WW_EPD'] / float(industryRowHigh["WW"][1])* row['WW_ACC'] +
+                            row['YW_EPD'] / float(industryRowHigh["YW"][1]) * row['YW_ACC'] +
+                            row['Milk_EPD'] / float(industryRowHigh["MK"][1])* row['Milk_ACC'] +
+                            row['TM_EPD'] / float(industryRowHigh["TM"][1])+
+                            row['Growth_EPD'] / float(industryRowHigh["Growth"][1])
+                        )
+                        composite_score = round(composite_score, 2)
+                        return composite_score
+                    else: 
+                        composite_score = (
+                            row['CED_EPD'] /  float(industryRowHigh["CED"][1]) +
+                            # row['BW_EPD'] / float(industryRow["BW"][1])* row['BW_ACC'] +
+                            (float(industryRowHigh.loc[1, "BW"]) - row['BW_EPD']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) +
+                            row['WW_EPD'] / float(industryRowHigh["WW"][1]) +
+                            row['YW_EPD'] / float(industryRowHigh["YW"][1])  +
+                            row['Milk_EPD'] / float(industryRowHigh["MK"][1]) +
+                            row['TM_EPD'] / float(industryRowHigh["TM"][1])+
+                            row['Growth_EPD'] / float(industryRowHigh["Growth"][1])
+                        )
+                        composite_score = round(composite_score, 2)
+                        return composite_score
+                        
+                df['Composite Score'] = df.apply(lambda row: calculate_composite_score(row, includeWeights=includeWeightsToggle), axis=1)
                 df_sorted = df.sort_values(by='Composite Score',ascending=False)
                 return(df_sorted)
 
-
-
-
-
-
-
-
-
-
-
-
-
-    def buildSearchQuery (options, formatted_sliderValue):
+    def buildSearchQuery (options, formatted_sliderValue,rowsReturnedSlider):
         # Define the search form
         #Get industry Data: 
         minced = ""
@@ -90,8 +93,6 @@ def show():
         mintm = ""
         minmilk = ""
         mingrowth = ""
-        
-        
         
         for option in options:
             epd = option
@@ -114,7 +115,6 @@ def show():
                 mingrowth = value
             else:
                 st.write("Invalid EPD selected.")
-                
         
 
         if st.multiselect:
@@ -127,7 +127,7 @@ def show():
                 "mintm": mintm,
                 "mingrowth": mingrowth,
                 "animal_sex": "B",
-                "rows": 500,
+                "rows": rowsReturnedSlider,
             }
             # Filter out empty parameters
             params = {k: v for k, v in params.items() if v}
@@ -145,43 +145,46 @@ def show():
                 st.error(f"Error fetching results: {e}")
                 return None
    
-   
     options = st.multiselect(
-                "Select EPD(s) to optimize Bull Selection with:",
-                ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
-                ["TM"],
-            )
+        "Select EPD(s) to optimize Bull Selection with:",
+        ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
+        ["TM"],
+    )
     custom_values = list(range(1, 6)) + list(range(10, 96, 5))
-    # Create the slider using this list of custom values
     slider_value = st.select_slider(
         "Select the Percentile Rank you would like to use for your search:",
         options=custom_values,
         value=5,
     )
     formatted_sliderValue = f"{slider_value}%"
-
+    rowsReturnedSlider = st.slider("How many results would you like to return?", min_value=1, max_value=500, step=10, value=10)
     sireSearchButton = st.button("Search Sire Database")
+    includeWeightsToggle = st.checkbox("Include Weights?", value=True)
+    
+    if includeWeightsToggle:
+        st.write("Weights will be included in the composite score calculation.")
+        includeWeightsToggle = True
+    else:
+        st.write("Weights will not be included in the composite score calculation.")
+        includeWeightsToggle = False
+    # Save the profiling stats to a file or display it
+    # Start profiling when the search button is clicked
     if sireSearchButton:
-        soup = buildSearchQuery(options, formatted_sliderValue)
+        # Call functions to search and process data
+        soup = buildSearchQuery(options, formatted_sliderValue, rowsReturnedSlider)
         df = searchSoup(soup)
-        df = epd_composite_score_app(df)
+        df = epd_composite_score_app(df, includeWeightsToggle)
+        # Display dataframe and plots
         st.dataframe(df)
-        
-        
-        
         melted_df = df.melt(id_vars=["Name", "Composite Score"], 
-                    value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
-                    var_name="EPD Type", value_name="EPD Value")
+                            value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
+                            var_name="EPD Type", value_name="EPD Value")
 
         # Create the line plot
         fig = px.line(melted_df, x="EPD Type", y="EPD Value", color="Name", markers=True)
         fig.update_layout(width=1500)
-        # Plot in Streamlit
         st.plotly_chart(fig)
-        
-        fig = px.scatter(df, x="Name", y="Composite Score",hover_data="Registration", color="Name")
 
-        # Adjust the figure size (optional)
+        fig = px.scatter(df, x="Name", y="Composite Score", hover_data=["Registration"], color="Name")
         fig.update_layout(width=1500)
-        # Plot in Streamlit
         st.plotly_chart(fig)

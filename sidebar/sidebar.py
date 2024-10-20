@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import pandas as pd
 from lib.helper_functions import *
-from tabs import home, herd_analysis, visualizations, individual_analysis, raw_data, logging
+from tabs import culling, home, topAndBottom, visualizations, raw_data, logging
 
 def show_sidebar():
     st.sidebar.title("Sidebar Options")

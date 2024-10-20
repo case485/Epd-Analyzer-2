@@ -33,16 +33,6 @@ def show():
         filtered_data = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age (Years)'] >= 2)]
     else:
         filtered_data = st.session_state.filteredDf[st.session_state.filteredDf['Age (Years)'] < 2]    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     if st.session_state.filteredDf is not None:
         def add_industry_trend_lines(fig, cattle_type, epd, filtered_data):
@@ -123,13 +113,11 @@ def show():
             
             # Add industry trend lines
             fig = add_industry_trend_lines(fig, cattle_type, epd, filtered_data)
-            
-            fig.update_layout(xaxis_tickangle=-45)  # Rotate x-axis labels for readability
+            fig.update_layout(xaxis_tickangle=-45, title_font_size=30)  # Rotate x-axis labels for readability
             st.plotly_chart(fig)
-        interactive_scatterplot_with_trend(filtered_data)
         
-        def plot_epd_bar_chart(df, epd):
-            st.title("EPD Bar Chart for the Herd")
+        def plot_epd_bar_chart(df, epd, cattle_type):
+            st.subheader(f"{epd} Bar Chart for the {cattle_type} ")
             
             # Extract the specific EPD columns
             epd_columns = [epd]
@@ -137,7 +125,7 @@ def show():
             # Iterate over each EPD column and plot bar graph
             for epd in epd_columns:
                 if epd in df.columns:
-                    st.subheader(f"Bar Chart for {epd}")
+                    st.write(f"##### Bar Chart for {epd}")
                     
                     # Group the data by EPD values and gather cow names for each group
                     df_copy = df.copy()
@@ -149,7 +137,7 @@ def show():
                     # Create the bar chart with hover info showing cow names
                     fig = px.bar(df_grouped, x=epd, y='Registration Number',
                                 hover_data={'Name': True}, title=f"Distribution of {epd}")
-                    
+                    fig.update_layout(yaxis_title="Cows per EPD Value")
                     # Calculate statistics
                     mean = df[epd].mean()
                     std_dev = df[epd].std()
@@ -159,7 +147,8 @@ def show():
                     fig.add_vline(x=mean + 2 * std_dev, line_dash="dash", line_color="red", annotation_text=f"+2 SD ({std_dev:.2f})", annotation_position="top left")
                     fig.add_vline(x=mean - 2 * std_dev, line_dash="dash", line_color="blue", annotation_text=f"-2 SD ({std_dev:.2f})", annotation_position="top left")
                     
-                    fig.update_layout(bargap=0.1, title_x=0.5)
+                    fig.update_layout(bargap=0.1, title_x=0.5, title_font_size=30)
                     st.plotly_chart(fig)
 
-        plot_epd_bar_chart(filtered_data, epd)
+        interactive_scatterplot_with_trend(filtered_data, )
+        plot_epd_bar_chart(filtered_data, epd, cattle_type)

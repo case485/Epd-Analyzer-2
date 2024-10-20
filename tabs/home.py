@@ -2,11 +2,13 @@ import streamlit as st
 import os
 import pandas as pd
 from lib.helper_functions import *
-from tabs import home, herd_analysis, visualizations, individual_analysis, raw_data, logging
+from tabs import culling, home, topAndBottom, visualizations, raw_data, logging
 from sidebar import sidebar  # Import the sidebar
 from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 import numpy as np
 
 def show():
@@ -221,9 +223,46 @@ def show():
         import plotly.express as px
         fig2 = px.scatter(st.session_state.filteredDf, x='Name', y='Composite Score', color='Type or Sex',hover_data=["Registration Number", "Type or Sex"], title=f'Full Herd View by Composite Score')
         fig2.update_layout(
+            height=500, width=1000,
             title_font_size=25,
         )
         st.plotly_chart(fig2)
+        
+        def create_epd_subplots(df):
+            # Create subplots: 3 rows, 3 columns
+            fig = make_subplots(rows=3, cols=3, 
+                                subplot_titles=("CED", "BW", "WW", "YW", "MK", "TM", "Growth"),
+                                vertical_spacing=0.3, 
+                                horizontal_spacing=0.1)
+
+            epd_columns = ["CED", "BW", "WW", "YW", "MK", "TM", "Growth"]
+            row_col_pairs = [(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1)]
+
+            # Loop through EPD columns and add to the subplots
+            for epd, (row, col) in zip(epd_columns, row_col_pairs):
+                if epd in df.columns:
+                    for _, row_data in df.iterrows():
+                        color = 'blue' if row_data["Designation"] == "Bull" else 'pink'
+                        trace = go.Scatter(
+                            x=[row_data["Name"]],  # Use a meaningful column for x-axis
+                            y=[row_data[epd]],
+                            mode='lines+markers',
+                            name=epd,
+                            text=[row_data["Name"]],  # Hover text
+                            line=dict(color=color)
+                        )
+                        fig.add_trace(trace, row=row, col=col)
+
+            # Update layout for better appearance
+            fig.update_layout(title_text="EPD Subplots",
+                            height=1500, width=1000,
+                            title_font_size=25,
+                            showlegend=False)
+
+            return fig
+        epdSubplotFig = create_epd_subplots(st.session_state.filteredDf)
+        st.plotly_chart(epdSubplotFig)
+        
 
 
         
