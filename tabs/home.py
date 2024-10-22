@@ -29,7 +29,7 @@ def show():
 
         # Streamlit toggle for "All Cattle or Fullblood Only"
         with col2Select: 
-            fullblood_only = st.checkbox('Fullblood Only', value=False)
+            fullblood_only = st.checkbox('Fullblood Only', value=True)
         if fullblood_only:
             st.session_state.filteredDf = st.session_state.filteredDf[(st.session_state.filteredDf['Breed 1'] == 'AA') & 
                                                                       (st.session_state.filteredDf['Breed Comp 1'] == 100)]

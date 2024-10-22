@@ -1,5 +1,5 @@
 import streamlit as st
-from tabs import culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
 
@@ -23,7 +23,7 @@ if 'filteredDf' not in st.session_state:
 st.session_state.cattlemax_file = sidebar.show_sidebar()
 
 # Define the tabs using `st.tabs`
-st.session_state.tabs = st.tabs(["Home", "Culling Scenario", "EPD Deep Dive", "Top/Bottom Performers","Sire Search", "Raw Data", "Logging"])
+st.session_state.tabs = st.tabs(["Home", "Culling Scenario", "EPD Deep Dive", "Top/Bottom Performers","Sire Search", "Raw Data", "Logging", "COI Analyzer"])
 
 # Load the appropriate content in each tab
 with st.session_state.tabs[0]:
@@ -46,3 +46,5 @@ if st.session_state.cattleMaxCleanDf is not None or st.session_state.filteredDf 
 
     with st.session_state.tabs[6]:
         logging.show()
+    with st.session_state.tabs[7]:
+        coi_analyzer2.show()
