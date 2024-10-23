@@ -4,6 +4,7 @@ import pandas as pd
 from lib.helper_functions import *
 from tabs import culling, home, topAndBottom, visualizations, raw_data, logging
 
+st.session_state.update(st.session_state)
 def show_sidebar():
     st.sidebar.title("Sidebar Options")
     st.session_state.cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")

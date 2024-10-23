@@ -2,7 +2,7 @@ import streamlit as st
 from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
-
+st.session_state.update(st.session_state)
 st.set_page_config(layout="wide")
 # Initialize session state variables only if they don't exist
 if 'cattleMaxCleanDf' not in st.session_state:

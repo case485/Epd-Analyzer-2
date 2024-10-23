@@ -9,8 +9,9 @@ import pstats
 from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
-
+st.session_state.update(st.session_state)
 def show():
+    
     def searchSoup(soup):
         # Find all rows with cow data
         cow_rows = soup.find_all('tr', id=lambda x: x and x.startswith('tr_'))
@@ -148,6 +149,19 @@ def show():
                 st.error(f"Error fetching results: {e}")
                 return None
    
+    def score_color(val):
+        color = ''
+        if val < 2:
+            color = 'background-color: #ff6666'  # Red for lower scores
+        elif 2 <= val < 5:
+            color = 'background-color: #ffcc66'  # Orange for mid-range scores
+        elif 5 <= val < 8:
+            color = 'background-color: #66ff66'  # Green for higher scores
+        else:
+            color = 'background-color: #6666ff'  # Blue for top scores
+        return color
+    
+   
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
         ["CED", "BW", "WW", "YW","TM", "MK", "Growth"],
@@ -155,14 +169,14 @@ def show():
     )
     custom_values = list(range(1, 6)) + list(range(10, 96, 5))
     slider_value = st.select_slider(
-        "Select the Percentile Rank you would like to use for your search:",
+        "Select the Industry Association Percentile Rank you would like to use for your search:",
         options=custom_values,
         value=5,
     )
     formatted_sliderValue = f"{slider_value}%"
-    rowsReturnedSlider = st.slider("How many results would you like to return?", min_value=1, max_value=500, step=10, value=10)
+    rowsReturnedSlider  = st.select_slider('Select number of Sires to Evalaute', options=[10, 50, 100, 500], value=50)
     sireSearchButton = st.button("Search Sire Database")
-    includeWeightsToggle = st.checkbox("Include Weights?", value=False)
+    includeWeightsToggle = st.checkbox("Include Accuracy Weights?", value=False)
     
     if includeWeightsToggle:
         st.write("Weights will be included in the composite score calculation.")
@@ -182,21 +196,19 @@ def show():
         cols = list(df.columns)
         cols.remove(col_to_move)
         df = df[[col_to_move] + cols]
-        st.data_editor(
-            df,
-            column_config={
-                "Composite Score": st.column_config.ProgressColumn(
-                    "Composite Score",
-                    help="Indexed value accross all EPDs",
-                    format="%f",
-                    min_value=0,
-                    max_value=8,
-                ),
-            },
-            hide_index=True,
-        )
-       
-        st.dataframe(df)
+        styled_df = df.style.applymap(score_color, subset=['Composite Score'])
+        st.data_editor(df, column_config={
+            "Composite Score": st.column_config.ProgressColumn(
+                "Composite Score",
+                help="Indexed value across all EPDs",
+                format="%f",
+                min_value=0,
+                max_value=8,
+            ),
+        }, hide_index=True)
+        
+
+        # st.dataframe(df)
         melted_df = df.melt(id_vars=["Name", "Composite Score"], 
                             value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
                             var_name="EPD Type", value_name="EPD Value")

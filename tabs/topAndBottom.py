@@ -61,17 +61,20 @@ def show():
         else:
             industry_metrics_df = st.session_state.nonParentsPercentileRankDf
             comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
+        selected_value = st.slider(
+                "Select Number of Cattle to Display",
+                min_value=1,
+                max_value=comparisonDF.shape[0],
+                value=5  # Default value
+            )
+        
+        
         buttonValue = st.button("Calculate Top and Bottom Performers")
         if buttonValue:
             highlighted_df = compare_epds_to_industry(comparisonDF, industry_metrics_df)
             
 
-            selected_value = st.slider(
-                "Select Number of Cattle to Display",
-                min_value=1,
-                max_value=highlighted_df.shape[0],
-                value=5  # Default value
-            )
+            
 
             display_columns = ['Name', 'Registration Number', 'Age', 'Composite Score', 'CED', 'BW', 'WW', 'YW', 'MK', 'TM', 'Growth']
 

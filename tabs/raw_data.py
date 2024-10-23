@@ -2,6 +2,7 @@ import streamlit as st
 from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
+st.session_state.update(st.session_state)
 
 def show():
     st.write("View the raw data.")

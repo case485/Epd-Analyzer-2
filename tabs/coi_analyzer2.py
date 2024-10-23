@@ -16,7 +16,7 @@ from sidebar import sidebar  # Import the sidebar
 
 from lib.helper_functions import *
 
-
+st.session_state.update(st.session_state)
 def show(): 
     def import_row_and_format(row_wide):
         row_wide_copy = row_wide.copy()
@@ -518,7 +518,7 @@ def show():
         for column in coi_df.columns:
             # Sort the column values in descending order
             sorted_coi_df[column] = coi_df[column].sort_values(ascending=False).values
-        sorted_coi_df.to_pickle("data_files/sorted_coi_df.pkl")
+        sorted_coi_df.to_pickle("sorted_coi_df.pkl")
         # Set the index back to the original row names (dam names)
         sorted_coi_df.index = coi_df.index
         sorted_coi_df = sorted_coi_df.apply(pd.to_numeric, errors='coerce')  # Convert columns to numeric, coercing errors to NaN

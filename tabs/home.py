@@ -2,8 +2,6 @@ import streamlit as st
 import os
 import pandas as pd
 from lib.helper_functions import *
-from tabs import culling, home, topAndBottom, visualizations, raw_data, logging
-from sidebar import sidebar  # Import the sidebar
 from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
@@ -12,8 +10,7 @@ from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw
 from sidebar import sidebar  # Import the sidebar
 
 
-import numpy as np
-
+st.session_state.update(st.session_state)
 def show():
     industryPdfFile = None
     
