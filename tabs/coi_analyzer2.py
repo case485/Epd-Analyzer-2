@@ -2,7 +2,6 @@
 
 import streamlit as st
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 from networkx.drawing.nx_agraph import graphviz_layout
 import seaborn as sns
