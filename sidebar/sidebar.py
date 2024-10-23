@@ -12,7 +12,9 @@ def show_sidebar():
     #If file exists then print success
     if os.path.exists(INDUSTRY_PERCENTILE_FILE):
         placeholder.info(f"Industry File Status: :white_check_mark:")
+        st.session_state.appState = True
         industryPdfFile = INDUSTRY_PERCENTILE_FILE
+        st.session_state.industryPdfFile = industryPdfFile
     else:
         placeholder.info(f"Industry File Status: :x:")
         industryPdfFile = get_percentile_rank_url_by_pattern()
@@ -28,7 +30,7 @@ def show_sidebar():
             st.session_state.activeSiresPercentileRankDf, st.session_state.activeDamsPercentileRankDf, st.session_state.nonParentsPercentileRankDf = extract_IndustryPercentileRankTables_from_pdf()
         else:
             st.sidebar.error("Failed to refresh metrics")
-    if st.session_state.cattlemax_file is not None and industryPdfFile is not None: 
+    if (st.session_state.cattlemax_file is not  None ): 
         cattlemax_csv= pd.read_csv(st.session_state.cattlemax_file)
         # st.session_state.cattlemaxDf = cattlemaxDf
         st.sidebar.success("All Files uploaded successfully")

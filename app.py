@@ -11,19 +11,14 @@ if 'cattlemax_file' not in st.session_state:
     st.session_state.cattlemax_file = None
 if 'filteredDf' not in st.session_state:
     st.session_state.filteredDf = None
-
-
-# for key, value in st.session_state.items():
-#     st.write(f"Key: {key}")
-
-# if 'cattlemax_file' not in st.session_state:
-#     st.write(f'cattlemax_file not in st.session_state')
-    
-# Display the sidebar
-st.session_state.cattlemax_file = sidebar.show_sidebar()
+if "industryPdfFile" not in st.session_state:
+    st.session_state.industryPdfFile = None
+if "appState" not in st.session_state:
+    st.session_state.appState = None
 
 # Define the tabs using `st.tabs`
 st.session_state.tabs = st.tabs(["Home", "Culling Scenario", "EPD Deep Dive", "Top/Bottom Performers","Sire Search", "Raw Data", "Logging", "COI Analyzer"])
+st.session_state.cattlemax_file = sidebar.show_sidebar()
 
 # Load the appropriate content in each tab
 with st.session_state.tabs[0]:

@@ -1,6 +1,9 @@
 import streamlit as st
 from lib.helper_functions import *
 import plotly.express as px
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
+
 
 def show():
     topCol1, topCol2, topCol3 = st.columns(3, gap="large")
@@ -104,7 +107,7 @@ def show():
     st.markdown("---")
     col1, col2, col3 = st.columns([0.2, 0.4, 0.5], gap="large")
     # List of EPD columns to create sliders for
-    epd_columns = ['CED', 'BW', 'WW', 'YW', 'TM', 'MK', "Composite Score"]
+    epd_columns = ['CED', 'BW', 'WW', 'YW', 'TM', 'MK', "Growth", "Composite Score"]
     # Create a dictionary to store the selected registration numbers
     selected_registration_numbers = {}
     # Loop through each EPD column to create a slider
@@ -123,6 +126,10 @@ def show():
             st.write(f"Registration Numbers for the lowest {epd} values:", reg_numbers)
             for reg_number in reg_numbers:
                 cullList.append(reg_number)
+    cullListDf = scenarioDf[scenarioDf['Registration Number'].isin(cullList)]
+    with col2:
+        st.write(f"Culled {cowCatagory} based on EPD")
+        st.write(cullListDf[["Name", "Registration Number"]].to_html(index=False), unsafe_allow_html=True)
 
     scenarioDf = st.session_state.filteredDf[~st.session_state.filteredDf['Registration Number'].isin(cullList)]
     #Sires
@@ -138,7 +145,6 @@ def show():
         if cowCatagory == "Active_Sires":
             activeSiresDf = scenarioDf[(scenarioDf['Type or Sex'] == 'B') & (df['Age'] >= 2)]
             st.write(f"Sires (Total : {activeSiresDf.shape[0]})")
-            st.write (f"Type of dataframe: {type(sires_styled_comparison_df)}")
             st.dataframe(sires_styled_comparison_df)
         elif cowCatagory == "Active_Dams":
             st.write("You selected Dams.")

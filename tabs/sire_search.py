@@ -6,6 +6,9 @@ from lib.helper_functions import *
 import plotly.express as px
 import cProfile
 import pstats
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
+
 
 def show():
     def searchSoup(soup):
@@ -147,7 +150,7 @@ def show():
    
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
-        ["CED", "BW", "WW", "YW","TM", "Milk", "Growth"],
+        ["CED", "BW", "WW", "YW","TM", "MK", "Growth"],
         ["TM"],
     )
     custom_values = list(range(1, 6)) + list(range(10, 96, 5))
@@ -159,7 +162,7 @@ def show():
     formatted_sliderValue = f"{slider_value}%"
     rowsReturnedSlider = st.slider("How many results would you like to return?", min_value=1, max_value=500, step=10, value=10)
     sireSearchButton = st.button("Search Sire Database")
-    includeWeightsToggle = st.checkbox("Include Weights?", value=True)
+    includeWeightsToggle = st.checkbox("Include Weights?", value=False)
     
     if includeWeightsToggle:
         st.write("Weights will be included in the composite score calculation.")
@@ -175,6 +178,24 @@ def show():
         df = searchSoup(soup)
         df = epd_composite_score_app(df, includeWeightsToggle)
         # Display dataframe and plots
+        col_to_move = 'Composite Score'
+        cols = list(df.columns)
+        cols.remove(col_to_move)
+        df = df[[col_to_move] + cols]
+        st.data_editor(
+            df,
+            column_config={
+                "Composite Score": st.column_config.ProgressColumn(
+                    "Composite Score",
+                    help="Indexed value accross all EPDs",
+                    format="%f",
+                    min_value=0,
+                    max_value=8,
+                ),
+            },
+            hide_index=True,
+        )
+       
         st.dataframe(df)
         melted_df = df.melt(id_vars=["Name", "Composite Score"], 
                             value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],

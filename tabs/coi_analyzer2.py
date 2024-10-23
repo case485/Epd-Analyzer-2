@@ -11,7 +11,9 @@ import time
 import streamlit.components.v1 as components
 import plotly.graph_objs as go
 from config import *
-from tabs import culling, home, topAndBottom, visualizations, raw_data, logging
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
+
 from lib.helper_functions import *
 
 

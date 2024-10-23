@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
+
 
 import numpy as np
 
@@ -262,22 +265,4 @@ def show():
             return fig
         epdSubplotFig = create_epd_subplots(st.session_state.filteredDf)
         st.plotly_chart(epdSubplotFig)
-        
-
-
-        
-
-     
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    # else:
-    #     st.write("Please upload the required files.")
     

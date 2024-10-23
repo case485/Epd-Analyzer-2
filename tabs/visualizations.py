@@ -6,6 +6,8 @@ import seaborn as sns
 from datetime import datetime
 import plotly.express as px
 import plotly.graph_objects as go
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
 
 def show():
     st.title('Interactive Cattle EPD Scatter Plot with Industry Trend Lines')

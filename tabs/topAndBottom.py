@@ -2,64 +2,67 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from functools import partial
+from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from sidebar import sidebar  # Import the sidebar
+
 
 def show():
     st.title("Isolate Top and Bottom Performers")
-    buttonValue = st.button("Calculate Top and Bottom Performers")
-    if buttonValue:
+    
        
-        if st.session_state.filteredDf is not None:
-            comparison_columns = {
-                "CED": "CED",
-                "BW": "BW",
-                "WW": "WW",
-                "YW": "YW",
-                "MK": "MK",
-                "TM": "TM",
-                "Growth": "Growth"
-            }
+    if st.session_state.filteredDf is not None:
+        comparison_columns = {
+            "CED": "CED",
+            "BW": "BW",
+            "WW": "WW",
+            "YW": "YW",
+            "MK": "MK",
+            "TM": "TM",
+            "Growth": "Growth"
+        }
 
-            def compare_epds_to_industry(filtered_df, industry_df):
-                for epd, industry_epd in comparison_columns.items():
-                    industry_value = float(industry_df.loc[industry_df['Categories'] == 'Average', industry_epd].values[0])
-                    filtered_df[f'{epd}_industry_avg'] = round(industry_value, 2)
-                return filtered_df
+        def compare_epds_to_industry(filtered_df, industry_df):
+            for epd, industry_epd in comparison_columns.items():
+                industry_value = float(industry_df.loc[industry_df['Categories'] == 'Average', industry_epd].values[0])
+                filtered_df[f'{epd}_industry_avg'] = round(industry_value, 2)
+            return filtered_df
 
-            def style_dataframe(data, columns_to_display):
-                def highlight_cells(val, col):
-                    try:
-                        cow_value = float(val)
-                        industry_value = data[f'{col}_industry_avg'].iloc[0]
-                        if pd.notnull(cow_value) and pd.notnull(industry_value):
-                            if col == "BW":
-                                color = 'green' if cow_value < industry_value else 'red'
-                                return f'font-weight: bold; color: {color}'
-                            else:
-                                color = 'green' if cow_value > industry_value else 'red'
-                                return f'font-weight: bold; color: {color}'
-                    except (ValueError, TypeError):
-                        pass
-                    return ''
-                
-                styled = data[columns_to_display].style
-                for col in comparison_columns:
-                    if col in columns_to_display:
-                        highlight_func = partial(highlight_cells, col=col)
-                        styled = styled.applymap(highlight_func, subset=[col]).format(precision=2)
+        def style_dataframe(data, columns_to_display):
+            def highlight_cells(val, col):
+                try:
+                    cow_value = float(val)
+                    industry_value = data[f'{col}_industry_avg'].iloc[0]
+                    if pd.notnull(cow_value) and pd.notnull(industry_value):
+                        if col == "BW":
+                            color = 'green' if cow_value < industry_value else 'red'
+                            return f'font-weight: bold; color: {color}'
+                        else:
+                            color = 'green' if cow_value > industry_value else 'red'
+                            return f'font-weight: bold; color: {color}'
+                except (ValueError, TypeError):
+                    pass
+                return ''
+            
+            styled = data[columns_to_display].style
+            for col in comparison_columns:
+                if col in columns_to_display:
+                    highlight_func = partial(highlight_cells, col=col)
+                    styled = styled.applymap(highlight_func, subset=[col]).format(precision=2)
 
-                return styled
-            selection2 = st.selectbox("Select Cattle Type", ["Active Sires", "Active Dams", "Non-Parents"], key="cattle_type_selection")
+            return styled
+        selection2 = st.selectbox("Select Cattle Type", ["Active Sires", "Active Dams", "Non-Parents"], key="cattle_type_selection")
 
-            if selection2 == "Active Dams":
-                industry_metrics_df = st.session_state.activeDamsPercentileRankDf
-                comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
-            elif selection2 == "Active Sires":
-                industry_metrics_df = st.session_state.activeSiresPercentileRankDf
-                comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
-            else:
-                industry_metrics_df = st.session_state.nonParentsPercentileRankDf
-                comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
-
+        if selection2 == "Active Dams":
+            industry_metrics_df = st.session_state.activeDamsPercentileRankDf
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'C') & (st.session_state.filteredDf['Age'] >= 2)]
+        elif selection2 == "Active Sires":
+            industry_metrics_df = st.session_state.activeSiresPercentileRankDf
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] >= 2)]
+        else:
+            industry_metrics_df = st.session_state.nonParentsPercentileRankDf
+            comparisonDF = st.session_state.filteredDf[(st.session_state.filteredDf['Age'] < 2)]
+        buttonValue = st.button("Calculate Top and Bottom Performers")
+        if buttonValue:
             highlighted_df = compare_epds_to_industry(comparisonDF, industry_metrics_df)
             
 

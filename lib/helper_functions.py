@@ -7,6 +7,8 @@ import camelot
 from config import *
 from datetime import datetime
 
+
+
 def log_error(message):
     # Check if the 'error_log' exists in session_state, if not, create it
     if 'error_log' not in st.session_state:
