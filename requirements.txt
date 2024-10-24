@@ -1,13 +1,10 @@
 beautifulsoup4==4.12.3
-pyPDF2
-pypdf 
-opencv-python-headless
-matplotlib
+matplotlib==3.8.4
 networkx==3.3
 numpy==2.1.2
 pandas==2.2.3
 plotly==5.24.0
 Requests==2.32.3
+scikit_learn==1.4.2
 seaborn==0.13.2
 streamlit==1.39.0
-
