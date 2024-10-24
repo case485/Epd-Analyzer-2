@@ -173,15 +173,11 @@ def show():
         # Extract the specified column and convert to DataFrame
         column_df = df[[column_name]]
         
-        # Convert DataFrame to CSV with or without header
-        csv = column_df.to_csv(index=False, header=include_header)
-        
-        # Create the download button
-        st.download_button(
-            label=f"Download {column_name} data",
-            data=csv,
-            file_name=filename,
-            mime='text/csv'
+        # Convert DataFrame to CSV with UTF-8 encoding
+        csv = column_df.to_csv(
+            index=False, 
+            header=include_header,
+            encoding='utf-8'
         )
 
    
