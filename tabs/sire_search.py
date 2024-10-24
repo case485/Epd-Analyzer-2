@@ -179,6 +179,17 @@ def show():
             header=include_header,
             encoding='utf-8'
         )
+        
+        # Create the download button with UTF-8 BOM for Excel compatibility
+        csv_with_bom = '\ufeff' + csv  # Add BOM for better UTF-8 compatibility
+        
+        st.download_button(
+            label=f"Download {column_name} data",
+            data=csv_with_bom,
+            file_name=filename,
+            mime='text/csv'
+        )
+
 
    
     options = st.multiselect(
