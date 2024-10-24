@@ -230,7 +230,7 @@ def show():
         
 
         # st.dataframe(df)
-        melted_df = df.melt(id_vars=["Name", "Composite Score"], 
+        melted_df = df.melt(id_vars=["Name","Registration", "Composite Score"], 
                             value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
                             var_name="EPD Type", value_name="EPD Value")
 
