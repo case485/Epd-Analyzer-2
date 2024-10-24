@@ -32,7 +32,6 @@ def get_percentile_rank_url_by_pattern():
             # If the href matches the pattern, return the full URL
             if pattern.search(a_tag['href']):
                 aaPercentileRankUrl =  a_tag['href']
-                # st.write(f"Found the URL: {a677777777777777777aPercentileRankUrl}")
                 #Now i have the url for  the pdf i need to download it and save it to the pdf_path
                 pdfResponse = requests.get(aaPercentileRankUrl)
                 if pdfResponse.status_code == 200:

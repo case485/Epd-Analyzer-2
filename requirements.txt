@@ -1,4 +1,5 @@
 beautifulsoup4==4.12.3
+pyPDF2==3.0.10
 pypdf==5.0.1
 opencv-python-headless
 camelot-py[base]
