@@ -43,5 +43,5 @@ if st.session_state.cattleMaxCleanDf is not None or st.session_state.filteredDf 
         logging.show()
     with st.session_state.tabs[7]:
         coi_analyzer2.show()
-    with st.session_state.tabs[7]:
+    with st.session_state.tabs[8]:
         cluster_analysis.show()
