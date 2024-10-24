@@ -36,3 +36,197 @@ are not labled the same.
 In the filtereddf milk is "Milk" and in the industry metrics it is "MK".
 In the filtereddf total maternal is "Total Maternal" and in the industry metrics it is "TM".
 In the filtereddf growth is "Growth Idx" and in the industry metrics it is "Growth".
+
+
+I am a small seed stock cattle rancher. I have a heard of cattle that I have gathered EPDs for. 
+I want to learn more about advanced analytical techniques that I can use to discover more about my heard and make better
+decisions about breeding. I want to uncover what makes the best cattle by the sires and dams I use to breed. 
+I would like to find uses of more advacned analytics techniques that I can use to discover more about my herd and make it better.
+The data I have is a dataframe with the cows and their EPDs plus some additional data like data of birth, sire and dam, and sex.
+Here are the columns I have in the dataframe: ['Status/Disposal',
+ 'Ear Tag',
+ 'Ear Tag Location',
+ 'Brand',
+ 'Brand Location',
+ 'Tattoo',
+ 'Tattoo Location',
+ 'Other ID',
+ 'Other ID Location',
+ 'Name',
+ 'Registration Number',
+ 'Breeder',
+ 'Breeder Member Number',
+ 'Owner',
+ 'Owner Member Number',
+ 'Date of Birth',
+ 'Birth Method',
+ 'Sire',
+ 'Dam',
+ 'Status',
+ 'Type or Sex',
+ 'Percent Purebred',
+ 'Breed',
+ 'Breed 1',
+ 'Breed 2',
+ 'Breed 3',
+ 'Breed Comp 1',
+ 'Breed Comp 2',
+ 'Breed Comp 3',
+ 'Horns',
+ 'Color Markings',
+ 'EPDType',
+ 'EPD Reporting Period',
+ 'CED',
+ 'CED Acc',
+ 'BW',
+ 'BW Acc',
+ 'WW',
+ 'WW Acc',
+ 'YW',
+ 'YW Acc',
+ 'MK',
+ 'MK Acc',
+ 'TM',
+ 'Calving Ease Maternal EPD',
+ 'Calving Ease Maternal Acc',
+ 'Scrotal Circumference EPD',
+ 'Scrotal Circumference Acc',
+ 'Ribeye Area EPD',
+ 'Ribeye Area Acc',
+ 'Marbling EPD',
+ 'Marbling Acc',
+ 'Fat Thickness EPD',
+ 'Fat Thickness Acc',
+ 'Carcass Weight EPD',
+ 'Carcass Weight  Acc',
+ 'Percent Retail Cuts EPD',
+ 'Percent Retail Cuts Acc',
+ 'Intramuscular Fat EPD',
+ 'Intramuscular Fat Acc',
+ 'Birth Weight',
+ 'Adjusted Birth Weight',
+ 'Birth Contemp Group',
+ 'Birth contemporaries',
+ 'Birth Weight Ratio',
+ 'Birth Height',
+ 'Calving Ease',
+ 'Birth Code',
+ 'Nurse Code',
+ 'Twin code',
+ 'Dam Teat Score',
+ 'Dam Udder Score',
+ 'Dam Gestation Length',
+ 'Weaning Date',
+ 'Weaning Weight Date',
+ 'Weaning Weight',
+ 'Adjusted Weaning Weight',
+ 'Weaning Contemp Group',
+ 'Weaning Contemporaries',
+ 'Weaning Weight Ratio',
+ 'Weaning WDA',
+ 'Weaning Height',
+ 'Weaning Frame Score',
+ 'Weaning Mgmt Code',
+ 'Weaning Pasture Code',
+ 'Weaning Sheath/Namvel',
+ 'Yearling Date',
+ 'Yearling Weight Date',
+ 'Yearling Weight',
+ 'Adjusted Yearling Weight',
+ 'Yearling Contemp Group',
+ 'Yearling Contemporaries',
+ 'Yearling Weight Ratio',
+ 'Yearling WDA',
+ 'Yearling ADG',
+ 'Yearling ADG Ratio',
+ 'Yearling Height',
+ 'Yearling Frame Score',
+ 'Yearling Mgmt Code',
+ 'Yearling Pasture Code',
+ 'Yearling Sheath/Navel',
+ 'Growth',
+ 'Year_Born',
+ 'Age',
+ 'Designation',
+ 'Composite Score']
+
+
+<class 'pandas.core.frame.DataFrame'>
+Index: 172 entries, 1577 to 2053
+Data columns (total 66 columns):
+ #   Column                    Non-Null Count  Dtype         
+---  ------                    --------------  -----         
+ 0   Status/Disposal           172 non-null    int64         
+ 1   Brand                     166 non-null    object        
+ 2   Brand Location            164 non-null    object        
+ 3   Tattoo                    172 non-null    object        
+ 4   Tattoo Location           36 non-null     object        
+ 5   Name                      172 non-null    object        
+ 6   Registration Number       172 non-null    object        
+ 7   Breeder                   172 non-null    object        
+ 8   Breeder Member Number     172 non-null    float64       
+ 9   Owner                     172 non-null    object        
+ 10  Owner Member Number       172 non-null    float64       
+ 11  Date of Birth             172 non-null    datetime64[ns]
+ 12  Birth Method              172 non-null    object        
+ 13  Sire                      172 non-null    object        
+ 14  Dam                       172 non-null    object        
+ 15  Status                    172 non-null    object        
+ 16  Type or Sex               172 non-null    object        
+ 17  Breed 1                   172 non-null    object        
+ 18  Breed Comp 1              172 non-null    float64       
+ 19  Horns                     172 non-null    object        
+ 20  EPDType                   172 non-null    object        
+ 21  EPD Reporting Period      135 non-null    float64       
+ 22  CED                       135 non-null    float64       
+ 23  CED Acc                   135 non-null    float64       
+ 24  BW                        135 non-null    float64       
+ 25  BW Acc                    135 non-null    float64       
+ 26  WW                        135 non-null    float64       
+ 27  WW Acc                    135 non-null    float64       
+ 28  YW                        135 non-null    float64       
+ 29  YW Acc                    135 non-null    float64       
+ 30  MK                        135 non-null    float64       
+ 31  MK Acc                    135 non-null    float64       
+ 32  TM                        135 non-null    float64       
+ 33  Birth Weight              172 non-null    float64       
+ 34  Adjusted Birth Weight     162 non-null    float64       
+ 35  Birth Contemp Group       172 non-null    object        
+ 36  Birth contemporaries      172 non-null    float64       
+ 37  Birth Weight Ratio        152 non-null    float64       
+ 38  Calving Ease              165 non-null    float64       
+ 39  Twin code                 169 non-null    float64       
+ 40  Weaning Date              102 non-null    object        
+ 41  Weaning Weight Date       102 non-null    object        
+ 42  Weaning Weight            102 non-null    float64       
+ 43  Adjusted Weaning Weight   81 non-null     float64       
+ 44  Weaning Contemp Group     101 non-null    object        
+ 45  Weaning Contemporaries    101 non-null    float64       
+ 46  Weaning Weight Ratio      72 non-null     float64       
+ 47  Weaning WDA               102 non-null    float64       
+ 48  Weaning Mgmt Code         102 non-null    float64       
+ 49  Weaning Pasture Code      49 non-null     object        
+ 50  Yearling Date             50 non-null     object        
+ 51  Yearling Weight Date      50 non-null     object        
+ 52  Yearling Weight           50 non-null     float64       
+ 53  Adjusted Yearling Weight  15 non-null     float64       
+ 54  Yearling Contemp Group    50 non-null     object        
+ 55  Yearling Contemporaries   50 non-null     float64       
+ 56  Yearling Weight Ratio     10 non-null     float64       
+ 57  Yearling WDA              50 non-null     float64       
+ 58  Yearling ADG              50 non-null     float64       
+ 59  Yearling Mgmt Code        50 non-null     float64       
+ 60  Yearling Pasture Code     50 non-null     object        
+ 61  Growth                    135 non-null    float64       
+ 62  Year_Born                 172 non-null    float64       
+ 63  Age                       172 non-null    float64       
+ 64  Designation               172 non-null    object        
+ 65  Composite Score           135 non-null    float64       
+dtypes: datetime64[ns](1), float64(38), int64(1), object(26)
+memory usage: 90.0+ KB
+
+
+
+ Some of the columns are not filled out all the way and should be dropped. Can you help me with this project to suggest  some advanced analytical techniques that I can use to discover more about my herd and make it better.
+ We first need to clean the data, All the EPDS BW,WW,YW, MK, TM, Growth should be numeric as well as their accuracy ratings. The date of birth
+ should be a datetime. And we should drop all the columns that are not filled out all the way.

@@ -81,8 +81,9 @@ def show():
                         composite_score = round(composite_score, 2)
                         return composite_score
                         
-                df['Composite Score'] = df.apply(lambda row: calculate_composite_score(row, includeWeights=includeWeightsToggle), axis=1)
-                df_sorted = df.sort_values(by='Composite Score',ascending=False)
+                with st.spinner('Calculating...'):
+                    df['Composite Score'] = df.apply(lambda row: calculate_composite_score(row, includeWeights=includeWeightsToggle), axis=1)
+                    df_sorted = df.sort_values(by='Composite Score',ascending=False)
                 return(df_sorted)
 
     def buildSearchQuery (options, formatted_sliderValue,rowsReturnedSlider):
@@ -158,7 +159,29 @@ def show():
         else:
             color = 'background-color: #6666ff'  # Blue for top scores
         return color
-    
+   
+    def download_column_as_csv(df, column_name, filename="SireRegNumList.csv"):
+        """
+        Creates a download button in Streamlit to download a specific DataFrame column as CSV.
+        
+        Parameters:
+        df (pandas.DataFrame): The source DataFrame
+        column_name (str): Name of the column to export
+        filename (str): Desired name of the downloaded file
+        """
+        # Extract the specified column and convert to DataFrame
+        column_df = df[[column_name]]
+        
+        # Convert DataFrame to CSV
+        csv = column_df.to_csv(index=False)
+        
+        # Create the download button
+        st.download_button(
+            label=f"Download {column_name} data",
+            data=csv,
+            file_name=filename,
+            mime='text/csv'
+        ) 
    
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
@@ -219,3 +242,5 @@ def show():
         fig = px.scatter(df, x="Name", y="Composite Score", hover_data=["Registration"], color="Name")
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
+        
+        download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
