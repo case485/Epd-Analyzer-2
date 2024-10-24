@@ -360,6 +360,6 @@ def show():
         # Display dams in clusters
         display_dams_in_clusters(dam_clusters, dams_df)
         
-    sire_file = st.file_uploader("Upload Sire(s) Pedigree File")    
+    sire_file = st.file_uploader("Upload Sire File List of EPDS")    
     if sire_file:
         clusterScenario(sire_file, st.session_state.filteredDf)
