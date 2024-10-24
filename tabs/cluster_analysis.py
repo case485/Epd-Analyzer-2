@@ -266,7 +266,7 @@ def show():
             )
 
             fig = go.Figure(data=data, layout=layout)
-            fig.show()
+            st.plotly_chart(fig)
 
         def display_dams_in_clusters(dam_clusters, dams_df):
             """
@@ -284,9 +284,9 @@ def show():
 
             # Display dams in each cluster
             for cluster_num, dam_list in clusters.items():
-                print(f"\nDams in Cluster {cluster_num}:")
+                st.write(f"\nDams in Cluster {cluster_num}:")
                 for dam in dam_list:
-                    print(f"- {dam}")
+                    st.write(f"- {dam}")
 
 
         # Number of clusters
@@ -305,31 +305,31 @@ def show():
 
         # Print detailed explanations and plot results
         for cluster_num in sorted(cluster_analysis.keys()):
-            print(f"\n### Cluster {cluster_num} Analysis ###")
-            print("Dam Cluster Average EPDs:")
-            print(cluster_analysis[cluster_num]['mean_epds'])
-            print("\nIdentified EPD Deficiencies (compared to overall means):")
+            st.write(f"\n### Cluster {cluster_num} Analysis ###")
+            st.write("Dam Cluster Average EPDs:")
+            st.write(cluster_analysis[cluster_num]['mean_epds'])
+            st.write("\nIdentified EPD Deficiencies (compared to overall means):")
             if not cluster_analysis[cluster_num]['deficiencies'].empty:
-                print(cluster_analysis[cluster_num]['deficiencies'])
+                st.write(cluster_analysis[cluster_num]['deficiencies'])
             else:
-                print("No significant deficiencies.")
+                st.write("No significant deficiencies.")
             
             # Sire selection explanation
             sire_info = sire_explanations[cluster_num]
-            print(f"\nSelected Sire for Cluster {cluster_num}: {sire_info['sire_name']} (ID: {sire_info['sire_id']})")
-            print("Sire EPDs:")
-            print(sire_info['sire_epds'])
-            print("\nSire Addresses the Following Deficiencies:")
+            st.write(f"\nSelected Sire for Cluster {cluster_num}: {sire_info['sire_name']} (ID: {sire_info['sire_id']})")
+            st.write("Sire EPDs:")
+            st.write(sire_info['sire_epds'])
+            st.write("\nSire Addresses the Following Deficiencies:")
             if sire_info['improvements']:
                 for epd, improvement in sire_info['improvements'].items():
-                    print(f"- {epd}: Sire improves by {improvement:.2f} units over dam cluster average.")
+                    st.write(f"- {epd}: Sire improves by {improvement:.2f} units over dam cluster average.")
             else:
-                print("Sire does not address any deficiencies directly but was selected based on overall compatibility.")
+                st.write("Sire does not address any deficiencies directly but was selected based on overall compatibility.")
             
             # Calculate and display improvements
             dam_mean_epds = cluster_analysis[cluster_num]['mean_epds']
             offspring_epd = offspring_epds[cluster_num]
-            print("\nExpected Improvement in Offspring EPDs:")
+            st.write("\nExpected Improvement in Offspring EPDs:")
             for epd in epd_columns:
                 dam_value = dam_mean_epds[epd]
                 offspring_value = offspring_epd[epd]
@@ -348,9 +348,9 @@ def show():
 
                 # Format the improvement message accordingly
                 if is_improvement:
-                    print(f"- {epd}: Improved by {abs(improvement):.2f} units ({abs(percentage):.2f}% {change_desc})")
+                    st.write(f"- {epd}: Improved by {abs(improvement):.2f} units ({abs(percentage):.2f}% {change_desc})")
                 else:
-                    print(f"- {epd}: No improvement (change of {improvement:.2f} units, {percentage:.2f}% change)")
+                    st.write(f"- {epd}: No improvement (change of {improvement:.2f} units, {percentage:.2f}% change)")
             
             # Retrieve the Sire's name for plotting
             sire_name = sire_info['sire_name']
@@ -360,4 +360,6 @@ def show():
         # Display dams in clusters
         display_dams_in_clusters(dam_clusters, dams_df)
         
-    clusterScenario("../datafiles/sireEpdsOnly.csv", df)
+    sire_file = st.file_uploader("Upload Sire(s) Pedigree File")    
+    if sire_file:
+        clusterScenario(sire_file, st.session_state.filteredDf)
