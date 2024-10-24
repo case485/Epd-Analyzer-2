@@ -283,7 +283,7 @@ def show():
 
             # Display dams in each cluster
             for cluster_num, dam_list in clusters.items():
-                st.write(f"\nDams in Cluster {cluster_num}:")
+                st.expander(f"\nDams in Cluster {cluster_num}:")
                 for dam in dam_list:
                     st.write(f"- {dam}")
 
