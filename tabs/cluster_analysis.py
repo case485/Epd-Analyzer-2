@@ -14,9 +14,11 @@ import plotly.graph_objs as go
 
 
 st.session_state.update(st.session_state)
-
-
 def show():
+    # Import necessary libraries
+    st.title("Analysis of Poteintial Sires and Impact on Dynamic Cluster Selection of Dams")
+
+def show2():
     # Import necessary libraries
     st.title("Analysis of Poteintial Sires and Impact on Dynamic Cluster Selection of Dams")
     
