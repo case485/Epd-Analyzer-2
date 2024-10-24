@@ -305,7 +305,7 @@ def show():
         cols = st.columns(n_clusters)
         # Print detailed explanations and plot results
         for cluster_num in sorted(cluster_analysis.keys()):
-            with cols[cluster_num]:
+            with st.expander(f"Cluster {cluster_num} Explanation"):
                 st.write(f"\n### Cluster {cluster_num} Analysis ###")
                 st.write("Dam Cluster Average EPDs:")
                 st.write(cluster_analysis[cluster_num]['mean_epds'])
