@@ -243,4 +243,5 @@ def show():
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
         st.dataframe(melted_df)
-        # download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
+        download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
+        
