@@ -242,5 +242,5 @@ def show():
         fig = px.scatter(df, x="Name", y="Composite Score", hover_data=["Registration"], color="Name")
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
-        
-        download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
+        st.dataframe(melted_df)
+        # download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
