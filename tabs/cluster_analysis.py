@@ -284,8 +284,8 @@ def show():
             # Display dams in each cluster
             for cluster_num, dam_list in clusters.items():
                 st.expander(f"\nDams in Cluster {cluster_num}:")
-                for dam in dam_list:
-                    st.write(f"- {dam}")
+                    for dam in dam_list:
+                        st.write(f"- {dam}")
 
 
         # Number of clusters
