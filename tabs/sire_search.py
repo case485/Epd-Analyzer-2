@@ -160,7 +160,7 @@ def show():
             color = 'background-color: #6666ff'  # Blue for top scores
         return color
    
-    def download_column_as_csv(df, column_name, filename="SireRegNumList.csv"):
+    def download_column_as_csv(df, column_name, filename="data.csv", include_header=False):
         """
         Creates a download button in Streamlit to download a specific DataFrame column as CSV.
         
@@ -168,12 +168,13 @@ def show():
         df (pandas.DataFrame): The source DataFrame
         column_name (str): Name of the column to export
         filename (str): Desired name of the downloaded file
+        include_header (bool): Whether to include the column header in the CSV
         """
         # Extract the specified column and convert to DataFrame
         column_df = df[[column_name]]
         
-        # Convert DataFrame to CSV
-        csv = column_df.to_csv(index=False)
+        # Convert DataFrame to CSV with or without header
+        csv = column_df.to_csv(index=False, header=include_header)
         
         # Create the download button
         st.download_button(
@@ -181,7 +182,8 @@ def show():
             data=csv,
             file_name=filename,
             mime='text/csv'
-        ) 
+        )
+
    
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
@@ -244,4 +246,3 @@ def show():
         st.plotly_chart(fig)
         st.dataframe(melted_df)
         download_column_as_csv(melted_df, "Registration", "SireRegNumList.csv")
-        
