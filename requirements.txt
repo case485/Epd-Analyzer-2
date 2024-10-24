@@ -1,8 +1,7 @@
 beautifulsoup4==4.12.3
-pyPDF2==3.0.10
-pypdf==5.0.1 
+pyPDF2
+pypdf 
 opencv-python-headless
-camelot-py[base]
 matplotlib
 networkx==3.3
 numpy==2.1.2
