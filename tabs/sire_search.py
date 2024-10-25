@@ -5,7 +5,7 @@ import pandas as pd
 from functools import partial
 from lib.helper_functions import *
 import plotly.express as px
-from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from tabs import coi_analyzer2, culling, herd_overview, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
 st.session_state.update(st.session_state)

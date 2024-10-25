@@ -56,66 +56,11 @@ def extract_IndustryPercentileRankTables_from_pdf():
         activeSiresPercentileRankDf = pd.read_pickle("datafiles/activeSiresPercentileRankDf.pkl")
         activeDamsPercentileRankDf = pd.read_pickle("datafiles/activeDamsPercentileRankDf.pkl")
         nonParentsPercentileRankDf = pd.read_pickle("datafiles/nonParentsPercentileRankDf.pkl")
-        st.info("Data loaded from local files.")
+        # st.info("Data loaded from local files.")
         return (activeSiresPercentileRankDf, activeDamsPercentileRankDf, nonParentsPercentileRankDf)
     else:
         st.warning("Data not found locally. Downloading from website.")
-        # pdf_path = INDUSTRY_PERCENTILE_FILE
-        # tables = camelot.read_pdf(pdf_path, pages='all', flavor='stream')
-        # log_error(f"tables: {tables}")
-        
-        # if len(tables) > 2:
-        #     try:
-        #         activeSiresPercentileRankDf = tables[0].df  # Convert the first table to a DataFrame
-        #         activeDamsPercentileRankDf = tables[1].df  # Convert the second table to a DataFrame
-        #         nonParentsPercentileRankDf = tables[2].df  # Convert the third table to a DataFrame
-                
-                
 
-        #         # Active Dams
-        #         df = activeDamsPercentileRankDf
-        #         header_index = df[df.isin(['CED']).any(axis=1)].index[0]  # Find where 'CED' is located
-        #         df = df.iloc[header_index:].reset_index(drop=True)
-        #         df.columns = df.iloc[0]  # Set new headers
-        #         df = df[1:].reset_index(drop=True)
-        #         df = df.rename(columns={df.columns[0]: 'Categories'})
-        #         activeDamsPercentileRankDf = df
-
-        #         # Active Sires
-        #         df = activeSiresPercentileRankDf
-        #         header_index = df[df.isin(['CED']).any(axis=1)].index[0]  # Find where 'CED' is located
-        #         df = df.iloc[header_index:].reset_index(drop=True)
-        #         df.columns = df.iloc[0]  # Set new headers
-        #         df = df[1:].reset_index(drop=True)
-        #         df = df.rename(columns={df.columns[0]: 'Categories'})
-        #         activeSiresPercentileRankDf = df
-        #         # Non-Parents
-        #         df = nonParentsPercentileRankDf
-        #         header_index = df[df.isin(['CED']).any(axis=1)].index[0]  # Find where 'CED' is located
-        #         df = df.iloc[header_index:].reset_index(drop=True)
-        #         df.columns = df.iloc[0]  # Set new headers
-        #         df = df[1:].reset_index(drop=True)
-        #         df = df.rename(columns={df.columns[0]: 'Categories'})
-        #         nonParentsPercentileRankDf = df
-                
-        #         # Save the dataframes
-        #         activeSiresPercentileRankDf.to_pickle('datafiles/activeSiresPercentileRankDf.pkl')
-        #         activeDamsPercentileRankDf.to_pickle('datafiles/activeDamsPercentileRankDf.pkl') 
-        #         nonParentsPercentileRankDf.to_pickle('datafiles/nonParentsPercentileRankDf.pkl')
-            
-                
-        #     except IndexError:
-        #         # Handle the case where 'CED' is not found in the DataFrame
-        #         st.error(f"Warning: 'CED' not found in one of the DataFrames.")
-        #     except KeyError as e:
-        #         st.error(f"KeyError: {e} - Ensure the column 'Categories' exists.")
-        #     except Exception as e:
-        #         st.error(f"An error occurred: {e}")
-            
-        # else:
-        #     st.error(f"Less than 3 tables found in the PDF. Found {len(tables)} tables.")
-        
-        # return (activeSiresPercentileRankDf, activeDamsPercentileRankDf, nonParentsPercentileRankDf)
 
 def epd_composite_score_app(df):
             # Load your dataframe

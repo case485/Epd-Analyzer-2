@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
+from tabs import coi_analyzer2, culling, herd_overview, topAndBottom, visualizations, raw_data, logging, sire_search
 from sidebar import sidebar  # Import the sidebar
 
 
@@ -14,7 +14,6 @@ st.session_state.update(st.session_state)
 def show():
     industryPdfFile = None
     
-    st.title("Akaushi Cattle EPD Analyzer")
     #User Selection to downfilter data 
     if st.session_state.cattleMaxCleanDf is not None:
         st.caption("Data loaded successfully.")
@@ -260,6 +259,17 @@ def show():
                             showlegend=False)
 
             return fig
-        epdSubplotFig = create_epd_subplots(st.session_state.filteredDf)
-        st.plotly_chart(epdSubplotFig)
-    
+        with st.expander("EPD Subplots"):
+            epdSubplotFig = create_epd_subplots(st.session_state.filteredDf)
+            st.plotly_chart(epdSubplotFig)
+    else:
+        st.markdown("""
+# Akaushi Herd Analysis Tool
+
+Welcome to your Akaushi herd analysis tool – designed to complement your experience and expertise in cattle management. This application works with your DigitalBeef exports (CattleMax Format) to provide additional perspective on your herd's data.
+
+While EPDs are just one piece of the complex puzzle of cattle breeding, this tool helps you examine your herd's metrics against industry figures and explore potential outcomes of different management decisions. Use it to analyze possible culling impacts and evaluate sire selections for your dam groups, keeping in mind that EPD data, like any tool, has its current limitations.
+
+As genetic testing technology advances and industry data grows, the reliability of these metrics will continue to evolve. In the meantime, this tool aims to serve as a practical aid in your decision-making process, not a replacement for the proven methods that have built successful Akaushi operations.
+""")
+        
