@@ -17,7 +17,7 @@ if "appState" not in st.session_state:
     st.session_state.appState = None
 
 # Define the tabs using `st.tabs`
-st.session_state.tabs = st.tabs(["Home", "Culling Scenario", "EPD Deep Dive", "Top/Bottom Performers","Sire Search" ,"COI Analyzer", "Cluster Analysis", "Raw Data", "Logging"])
+st.session_state.tabs = st.tabs(["Herd Overview", "Culling Scenario", "EPD Deep Dive", "Top/Bottom Performers","Sire Search" ,"COI Analyzer", "Cluster Analysis", "Raw Data", "Logging"])
 st.session_state.cattlemax_file = sidebar.show_sidebar()
 
 # Load the appropriate content in each tab

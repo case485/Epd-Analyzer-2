@@ -598,7 +598,7 @@ def show():
                         for dam in dam_list:
                             listBox.write(f"- {dam}")
 
-        # Function to plot EPD improvements using Plotly
+        # Function to plot EPD improvements using Plotly #FIXED 
         def plot_epd_improvement(cluster_num, dam_mean_epds, offspring_epds, sire_name):
             # Ensure that the Series are aligned and ordered, and apply rounding
             dam_epds = dam_mean_epds[epd_columns].round(2)
@@ -631,7 +631,7 @@ def show():
             )
 
             fig = go.Figure(data=data, layout=layout)
-            with middleColumns[cluster_num]:
+            with bottomColumns[cluster_num]:
                 st.plotly_chart(fig)
 
         # Function to visualize clusters network
@@ -750,53 +750,53 @@ def show():
         # Print detailed explanations and plot results
         for cluster_num in sorted(cluster_analysis.keys()):
             with middleColumns[cluster_num]:
-                st.write(f"\n### Cluster {cluster_num} Analysis ###")
-                st.write(f"Mean EPDs for Cluster {cluster_num} Dams:")
-                st.write(cluster_analysis[cluster_num]['mean_epds'].round(2))
-                st.write("\nIdentified EPD Deficiencies (compared to overall means):")
-                st.write("Dam Cluster Average EPDs:")
-                if not cluster_analysis[cluster_num]['deficiencies'].empty:
-                    st.write(cluster_analysis[cluster_num]['deficiencies'].round(2))
-                else:
-                    st.write("No significant deficiencies.")
-
-                # Sire selection explanation
-                sire_info = sire_explanations[cluster_num]
-                st.write(f"\nBest Sire for Cluster {cluster_num}: {sire_info['sire_name']} (ID: {sire_info['sire_id']})")
-                st.write("Sire EPDs:")
-                st.write(sire_info['sire_epds'].round(2))
-                st.write("\nSire Addresses the Following Deficiencies:")
-                if sire_info['improvements']:
-                    for epd, improvement in sire_info['improvements'].items():
-                        st.write(f"- {epd}: Sire improves by {improvement:.2f} units over dam cluster average.")
-                else:
-                    st.write("Sire does not address any deficiencies directly but was selected based on overall compatibility.")
-
-                # Calculate and display improvements
-                dam_mean_epds = cluster_analysis[cluster_num]['mean_epds'].round(2)
-                offspring_epd = offspring_epds[cluster_num].round(2)
-                st.write("\nExpected Improvement in Offspring EPDs:")
-                for epd in epd_columns:
-                    dam_value = dam_mean_epds[epd]
-                    offspring_value = offspring_epd[epd]
-                    improvement = offspring_value - dam_value
-                    percentage = (improvement / abs(dam_value)) * 100 if dam_value != 0 else 0
-
-                    desired_direction = desired_directions[epd]
-
-                    # Determine if the change is in the desired direction
-                    if desired_direction == 'increase':
-                        is_improvement = improvement > 0
-                        change_desc = 'increase'
-                    elif desired_direction == 'decrease':
-                        is_improvement = improvement < 0
-                        change_desc = 'decrease'
-
-                    # Format the improvement message accordingly
-                    if is_improvement:
-                        st.write(f"- {epd}: Improved by {abs(improvement):.2f} units ({abs(percentage):.2f}% {change_desc})")
+                with st.expander(f"Cluster {cluster_num} Dams Analysis"):
+                    st.write(f"Mean EPDs for Cluster {cluster_num} Dams:")
+                    st.write(cluster_analysis[cluster_num]['mean_epds'].round(2))
+                    st.write("\nIdentified EPD Deficiencies (compared to overall means):")
+                    st.write("Dam Cluster Average EPDs:")
+                    if not cluster_analysis[cluster_num]['deficiencies'].empty:
+                        st.write(cluster_analysis[cluster_num]['deficiencies'].round(2))
                     else:
-                        st.write(f"- {epd}: No improvement (change of {improvement:.2f} units, {percentage:.2f}% change)")
+                        st.write("No significant deficiencies.")
+
+                    # Sire selection explanation
+                    sire_info = sire_explanations[cluster_num]
+                    st.write(f"\nBest Sire for Cluster {cluster_num}: {sire_info['sire_name']} (ID: {sire_info['sire_id']})")
+                    st.write("Sire EPDs:")
+                    st.write(sire_info['sire_epds'].round(2))
+                    st.write("\nSire Addresses the Following Deficiencies:")
+                    if sire_info['improvements']:
+                        for epd, improvement in sire_info['improvements'].items():
+                            st.write(f"- {epd}: Sire improves by {improvement:.2f} units over dam cluster average.")
+                    else:
+                        st.write("Sire does not address any deficiencies directly but was selected based on overall compatibility.")
+
+                    # Calculate and display improvements
+                    dam_mean_epds = cluster_analysis[cluster_num]['mean_epds'].round(2)
+                    offspring_epd = offspring_epds[cluster_num].round(2)
+                    st.write("\nExpected Improvement in Offspring EPDs:")
+                    for epd in epd_columns:
+                        dam_value = dam_mean_epds[epd]
+                        offspring_value = offspring_epd[epd]
+                        improvement = offspring_value - dam_value
+                        percentage = (improvement / abs(dam_value)) * 100 if dam_value != 0 else 0
+
+                        desired_direction = desired_directions[epd]
+
+                        # Determine if the change is in the desired direction
+                        if desired_direction == 'increase':
+                            is_improvement = improvement > 0
+                            change_desc = 'increase'
+                        elif desired_direction == 'decrease':
+                            is_improvement = improvement < 0
+                            change_desc = 'decrease'
+
+                        # Format the improvement message accordingly
+                        if is_improvement:
+                            st.write(f"- {epd}: Improved by {abs(improvement):.2f} units ({abs(percentage):.2f}% {change_desc})")
+                        else:
+                            st.write(f"- {epd}: No improvement (change of {improvement:.2f} units, {percentage:.2f}% change)")
 
             # Retrieve the Sire's name for plotting
             sire_name = sire_info['sire_name']
@@ -806,7 +806,10 @@ def show():
 
         # Visualize clusters network
         visualize_clusters_network(dam_clusters, similarity_threshold)
-
+    introContainer = st.container()
+    with introContainer:
+        st.title("Cluster Analysis")
+        st.write("This application allows you to analyze and visualize clusters of dams based on their EPDs. You upload a list of potential sires you would like to evaluate against your dams, the application will break your Dams into discrete clusters based on similarities in EPD deficientices and match the sire that shows the strogest improvemnt to their EPDs")
     topRow = st.container()
     topColumns = topRow.columns(3)
     

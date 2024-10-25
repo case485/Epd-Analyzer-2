@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+from functools import partial
 from lib.helper_functions import *
 import plotly.express as px
 from tabs import coi_analyzer2, culling, home, topAndBottom, visualizations, raw_data, logging, sire_search
@@ -191,6 +192,24 @@ def show():
         )
 
 
+
+    def style_rank_columns(df):
+        def highlight_low_ranks(val, column_name):
+            if column_name.endswith('_Rank') and val < 5:
+                return 'background-color: lightgreen !important'
+            return ''
+        # Create the styled DataFrame
+        styled_df = df.style.applymap(
+            lambda x, col=None: highlight_low_ranks(x, col),
+            subset=df.columns[df.columns.str.endswith('_Rank')]
+        )
+        # Hide the Styler's index if desired
+        # styled_df.hide(axis='index')
+        return styled_df
+    
+        
+
+
    
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
@@ -251,5 +270,7 @@ def show():
         fig = px.scatter(df, x="Name", y="Composite Score", hover_data=["Registration"], color="Name")
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
-        st.dataframe(df)
+        # styled_df = df.style.apply(highlight_cells, axis=None).format(precision=2)
+        styled_df = style_rank_columns(df)
+        st.dataframe(styled_df)
         download_column_as_csv(df, "Registration", "SireRegNumList.csv")
