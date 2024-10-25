@@ -93,8 +93,8 @@ def show():
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: green'
                     styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: green'
                 elif rank > 50 and rank < 75:
-                    styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: yellow'
-                    styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: yellow'
+                    styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: orange'
+                    styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: orange'
                 else:
                     styled_data.at[row, 'Herd Avgs'] = 'font-weight: bold; color: red'
                     styled_data.at[row, 'Industry Rank'] = 'font-weight: bold; color: red'
