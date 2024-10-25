@@ -373,8 +373,7 @@ def show1():
         
         
 def show():
-    def clusterScenario(sireCSV, df):
-        n_clusters=3
+    def clusterScenario(sireCSV, df, n_clusters=3):
         similarity_threshold= 0.7
         """
         Analyzes the breeding program by clustering dams, matching sires, and visualizing the results.
@@ -814,18 +813,19 @@ def show():
     topColumns = topRow.columns(3)
     
     middleRow = st.container()
-    middleColumns = middleRow.columns(3)
+    
     
     bottomRow = st.container()
-    bottomColumns = bottomRow.columns(3)
+    
     
     footer = st.container()
     with topColumns[0]:
         sire_file2 = st.file_uploader("Upload Sire File2 List of EPDS")
-
+    with topColumns[2]:
+            n_clusters = st.number_input("Enter the number of clusters", min_value=2, max_value=5, value=3)
+            middleColumns = middleRow.columns(n_clusters)
+            bottomColumns = bottomRow.columns(n_clusters)
     if sire_file2:
-        with topColumns[2]:
-            st.write("Sire File2 Uploaded Successfully!")
-        clusterScenario(sire_file2, st.session_state.filteredDf)
+        clusterScenario(sire_file2, st.session_state.filteredDf, n_clusters)
 
             

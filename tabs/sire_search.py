@@ -194,20 +194,26 @@ def show():
 
 
     def style_rank_columns(df):
-        def highlight_low_ranks(val, column_name):
-            if column_name.endswith('_Rank') and val < 5:
-                return 'background-color: lightgreen !important'
-            return ''
-        # Create the styled DataFrame
-        styled_df = df.style.applymap(
-            lambda x, col=None: highlight_low_ranks(x, col),
-            subset=df.columns[df.columns.str.endswith('_Rank')]
-        )
-        # Hide the Styler's index if desired
-        # styled_df.hide(axis='index')
-        return styled_df
-    
+        """
+        Applies styling to a DataFrame for Streamlit display where columns ending in '_Rank' 
+        get a green background if the value is less than 5
         
+        Parameters:
+        df (pandas.DataFrame): Input DataFrame
+        
+        Returns:
+        pandas.io.formats.style.Styler: Styled DataFrame ready for Streamlit display
+        """
+        # Define the styling function
+        def highlight_low_ranks(series):
+            return [f'font-weight: bold; color: green; font-size: 150pt' if (str(series.name).endswith('_Rank') and v < 5) else '' 
+                    for v in series]
+        
+        # Apply the styling
+        styled_df = df.style.apply(highlight_low_ranks).format(precision=2)
+        
+        return styled_df
+            
 
 
    
@@ -236,10 +242,18 @@ def show():
     # Save the profiling stats to a file or display it
     # Start profiling when the search button is clicked
     if sireSearchButton:
+        
         # Call functions to search and process data
         soup = buildSearchQuery(options, formatted_sliderValue, rowsReturnedSlider)
         df = searchSoup(soup)
         df = epd_composite_score_app(df, includeWeightsToggle)
+        if 'TM_ACC' in df.columns:
+            df = df.drop('TM_ACC', axis=1)
+        if 'Growth_ACC' in df.columns:
+            df = df.drop('Growth_ACC', axis=1)
+        if 'Tattoo' in df.columns:
+            df = df.drop('Tattoo', axis=1)
+        df = df.loc[:, ~df.columns.str.endswith('_CNG')]
         # Display dataframe and plots
         col_to_move = 'Composite Score'
         cols = list(df.columns)
@@ -271,6 +285,9 @@ def show():
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
         # styled_df = df.style.apply(highlight_cells, axis=None).format(precision=2)
+
         styled_df = style_rank_columns(df)
-        st.dataframe(styled_df)
+        st.dataframe(styled_df, hide_index=True)
+        
+        st.write("Test")
         download_column_as_csv(df, "Registration", "SireRegNumList.csv")
