@@ -63,8 +63,8 @@ def extract_IndustryPercentileRankTables_from_pdf():
 
 
 def epd_composite_score_app(df):
-            st.write("In epd_composite_score_app")
-            st.dataframe(df)
+            # st.write("In epd_composite_score_app")
+            # st.dataframe(df)
             # Load your dataframe
             # Define a function to calculate composite score
             
@@ -112,8 +112,8 @@ def epd_composite_score_app(df):
             return(df)
 
 def clean_and_modify_CattlemaxDfs(df):
-    st.write("In clean_and_modify_CattlemaxDfs")
-    st.dataframe(df)
+    # st.write("In clean_and_modify_CattlemaxDfs")
+    # st.dataframe(df)
     today = datetime.today()
     df = df.rename(columns={
         'Calving Ease Direct EPD': 'CED',
