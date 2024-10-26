@@ -12,7 +12,7 @@ def show():
     with topCol2:
         cowCatagory = st.selectbox(
                 "Cattle Type for Analysis",
-                ["Active_Sires", "Active_Dams", "Non_Parents"],
+                ["Active_Sires", "Active_Dams", "Non_Parents", "Bull_Calves"],
             )
         if cowCatagory == "Active_Sires":
             st.write("You selected Sires.")
@@ -23,6 +23,9 @@ def show():
         elif cowCatagory == "Non_Parents":
             st.write("You selected Non-Parents.")
             scenarioDf = st.session_state.filteredDf[st.session_state.filteredDf['Age'] < 2]
+        elif cowCatagory == "Bull_Calves":
+            st.write("You selected Bull Calves")
+            scenarioDf = st.session_state.filteredDf[(st.session_state.filteredDf['Type or Sex'] == 'B') & (st.session_state.filteredDf['Age'] < 1)]
         else:
             st.write("You didn't select type.")
     if st.session_state.filteredDf is not None:
@@ -37,6 +40,8 @@ def show():
             yourHerdDf = yourHerdDf[(yourHerdDf['Type or Sex'] == 'B') & (yourHerdDf['Age'] >= 2)]
         elif catagory == "Non-Parents":
             yourHerdDf = yourHerdDf[yourHerdDf['Age'] < 2]
+        elif catagory == "Bull_Calves":
+            yourHerdDf = yourHerdDf[(yourHerdDf['Type or Sex'] == 'B') & (yourHerdDf['Age'] < 1)]
         else:
             raise ValueError("Invalid catagory. Must be 'Dams', 'Sires', or 'Non-Parents'.")
         column_mapping = {
@@ -138,7 +143,8 @@ def show():
     dams_styled_comparison_df, damsFig = compare_sires_epds_with_industry(scenarioDf, st.session_state.activeDamsPercentileRankDf, "Dams")
     #Non-Parents
     non_parents_styled_comparison_df, nonParentsFig = compare_sires_epds_with_industry(scenarioDf, st.session_state.nonParentsPercentileRankDf, "Non-Parents")
-    
+    #Bull Calves
+    bull_calves_styled_comparison_df, nonParentsFig = compare_sires_epds_with_industry(scenarioDf, st.session_state.nonParentsPercentileRankDf, "Non-Parents")   
     # Display the styled dataframe
     
     with col3:
@@ -157,6 +163,11 @@ def show():
             nonParentDf = scenarioDf[scenarioDf['Age'] < 2]
             st.write(f"Non-Parents (Total : {nonParentDf.shape[0]})")
             st.dataframe(non_parents_styled_comparison_df)
+        elif cowCatagory == "Bull_Calves":
+            st.write("You selected Bull Calves.")
+            bullCalvesDf = scenarioDf[(scenarioDf['Type or Sex'] == 'B') & (df['Age'] < 1)]
+            st.write(f"Non-Parents (Total : {bullCalvesDf.shape[0]})")
+            st.dataframe(bull_calves_styled_comparison_df)
         else:
             st.write("You didn't select type.")
         

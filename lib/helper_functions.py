@@ -63,11 +63,12 @@ def extract_IndustryPercentileRankTables_from_pdf():
 
 
 def epd_composite_score_app(df):
+            st.write("In epd_composite_score_app")
+            st.dataframe(df)
             # Load your dataframe
             # Define a function to calculate composite score
             
             def calculate_composite_score(row, weights):
-                #FIX - need to normalize each epd by dividing by the max value of each trait
                 if row['Designation'] == "Bull":
                     industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
                     industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
@@ -106,11 +107,13 @@ def epd_composite_score_app(df):
                 'TM': st.sidebar.slider('Total Maternal Weight', 0.0, 2.0, 1.0, .5),
                 'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 2.0, 1.0, .5),
             }
-
+             #DEBUG                      
             df['Composite Score'] = df.apply(calculate_composite_score, axis=1, weights=weights)
             return(df)
 
 def clean_and_modify_CattlemaxDfs(df):
+    st.write("In clean_and_modify_CattlemaxDfs")
+    st.dataframe(df)
     today = datetime.today()
     df = df.rename(columns={
         'Calving Ease Direct EPD': 'CED',

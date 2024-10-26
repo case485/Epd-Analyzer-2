@@ -9,7 +9,7 @@ st.session_state.update(st.session_state)
 def show_sidebar():
     cattlemax_csv = None
     st.sidebar.title("Sidebar Options")
-    st.session_state.cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd")
+    st.session_state.cattlemax_file = st.sidebar.file_uploader("Upload the Cattlemax Export File for the Herd, if you have issues be sure and save your herd file as a CSV UTF-8 file in Excel")
     
     placeholder = st.sidebar.empty()
     # st.sidebar.subheader("Industry Metrics Status")
@@ -37,6 +37,7 @@ def show_sidebar():
     if (st.session_state.cattlemax_file  is not None): 
         
         cattlemax_csv= pd.read_csv(st.session_state.cattlemax_file)
+
         # st.session_state.cattlemaxDf = cattlemaxDf
         st.sidebar.success("All Files uploaded successfully")
         st.session_state.cattleMaxCleanDf = clean_and_modify_CattlemaxDfs( cattlemax_csv)
