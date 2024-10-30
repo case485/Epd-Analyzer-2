@@ -36,7 +36,7 @@ def show_sidebar():
             st.sidebar.error("Failed to refresh metrics")
     if (st.session_state.cattlemax_file  is not None): 
         
-        cattlemax_csv= pd.read_csv(st.session_state.cattlemax_file)
+        cattlemax_csv= pd.read_csv(st.session_state.cattlemax_file, index_col=False)
 
         # st.session_state.cattlemaxDf = cattlemaxDf
         st.sidebar.success("All Files uploaded successfully")
