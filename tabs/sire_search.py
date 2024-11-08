@@ -22,6 +22,7 @@ def show():
             tattoo = cow_info[0].find('b', text='Tattoo:').next_sibling.strip()
             name = cow_info[0].find('b', text='Name:').next_sibling.strip()
             # Extract EPDs
+            st.write(f"Row: {row}")
             epds = {}
             epd_headers = ['CED', 'BW', 'WW', 'YW', 'Milk', 'TM', 'Growth']
             for i, header in enumerate(epd_headers):

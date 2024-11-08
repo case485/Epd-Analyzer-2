@@ -69,30 +69,33 @@ def epd_composite_score_app(df):
             # Define a function to calculate composite score
             
             def calculate_composite_score(row, weights):
-                if row['Designation'] == "Bull":
-                    industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
-                    industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
-                elif row['Designation'] == "Dam":
-                    industryRowHigh = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "High"]
-                    industryRowLow = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "Low"]
-                elif row['Designation'] == "Non-Parent":
-                    industryRowHigh = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "High"]
-                    industryRowLow = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "Low"]
-                elif row['Designation'] == "Steer":
-                    industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
-                    industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
-                else:
-                    st.error(f"Designation not recognized: {row['Designation']}")
-                
-                composite_score = (
-                    row['CED'] / float(industryRowHigh["CED"][1]) * weights['CED'] +
-                    (float(industryRowHigh.loc[1, "BW"]) - row['BW']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * weights['BW'] +
-                    row['WW'] / float(industryRowHigh["WW"][1])* weights['WW'] +
-                    row['YW'] / float(industryRowHigh["YW"][1])* weights['YW'] +
-                    row['MK'] / float(industryRowHigh["MK"][1])* weights['MK'] +
-                    row['TM'] / float(industryRowHigh["TM"][1])* weights['TM'] +
-                    row['Growth'] / float(industryRowHigh["Growth"][1])* weights['Growth']
-                )
+                try: 
+                    if row['Designation'] == "Bull":
+                        industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                        industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
+                    elif row['Designation'] == "Dam":
+                        industryRowHigh = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "High"]
+                        industryRowLow = st.session_state.activeDamsPercentileRankDf.loc[st.session_state.activeDamsPercentileRankDf['Categories'] == "Low"]
+                    elif row['Designation'] == "Non-Parent":
+                        industryRowHigh = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "High"]
+                        industryRowLow = st.session_state.nonParentsPercentileRankDf.loc[st.session_state.nonParentsPercentileRankDf['Categories'] == "Low"]
+                    elif row['Designation'] == "Steer":
+                        industryRowHigh = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "High"]
+                        industryRowLow = st.session_state.activeSiresPercentileRankDf.loc[st.session_state.activeSiresPercentileRankDf['Categories'] == "Low"]
+                    else:
+                        st.error(f"Designation not recognized: {row['Designation']}")
+                    composite_score = (
+                        row['CED'] / float(industryRowHigh["CED"][1]) * weights['CED'] +
+                        (float(industryRowHigh.loc[1, "BW"]) - row['BW']) / (float(industryRowHigh.loc[1, "BW"]) - float(industryRowLow.loc[3, "BW"])) * weights['BW'] +
+                        row['WW'] / float(industryRowHigh["WW"][1])* weights['WW'] +
+                        row['YW'] / float(industryRowHigh["YW"][1])* weights['YW'] +
+                        row['MK'] / float(industryRowHigh["MK"][1])* weights['MK'] +
+                        row['TM'] / float(industryRowHigh["TM"][1])* weights['TM'] +
+                        row['Growth'] / float(industryRowHigh["Growth"][1])* weights['Growth']
+                    )
+                except:
+                    st.error(f"Error calculating composite score for row: {row}")
+                    composite_score = 0.0
                 return composite_score
 
             # Sidebar sliders to adjust weights
