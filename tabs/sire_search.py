@@ -9,6 +9,9 @@ from tabs import coi_analyzer2, culling, herd_overview, topAndBottom, visualizat
 from sidebar import sidebar  # Import the sidebar
 
 st.session_state.update(st.session_state)
+if "filtered_df" not in st.session_state:
+    st.session_state.filtered_df = pd.DataFrame()
+
 def show():
     
     def searchSoup(soup):
@@ -217,37 +220,50 @@ def show():
             
 
 
-   
+    # Initialize session state for saved sires
+    if 'selected_sires_df' not in st.session_state:
+        st.session_state.selected_sires_df = pd.DataFrame()
+
+    if 'current_selections' not in st.session_state:
+        st.session_state.current_selections = set()
+
+    def handle_selection():
+        if 'data_editor' in st.session_state:
+            edited_df = st.session_state.data_editor
+            selected_rows = edited_df[edited_df["Save_Sire"]]
+            if not selected_rows.empty:
+                if 'filtered_df' not in st.session_state:
+                    st.session_state.filtered_df = selected_rows
+                else:
+                    st.session_state.filtered_df = pd.concat([st.session_state.filtered_df, selected_rows]).drop_duplicates()
+
     options = st.multiselect(
         "Select EPD(s) to optimize Bull Selection with:",
         ["CED", "BW", "WW", "YW","TM", "MK", "Growth"],
         ["TM"],
-    )
+        )
     custom_values = list(range(1, 6)) + list(range(10, 96, 5))
     slider_value = st.select_slider(
         "Select the Industry Association Percentile Rank you would like to use for your search:",
         options=custom_values,
         value=5,
-    )
+        )
     formatted_sliderValue = f"{slider_value}%"
-    rowsReturnedSlider  = st.select_slider('Select number of Sires to Evalaute', options=[10, 50, 100, 500], value=50)
+    rowsReturnedSlider = st.select_slider('Select number of Sires to Evalaute', options=[10, 50, 100, 500], value=50)
     sireSearchButton = st.button("Search Sire Database")
     includeWeightsToggle = st.checkbox("Include Accuracy Weights?", value=False)
-    
+
     if includeWeightsToggle:
         st.write("Weights will be included in the composite score calculation.")
-        includeWeightsToggle = True
     else:
         st.write("Weights will not be included in the composite score calculation.")
-        includeWeightsToggle = False
-    # Save the profiling stats to a file or display it
-    # Start profiling when the search button is clicked
+
     if sireSearchButton:
-        
-        # Call functions to search and process data
         soup = buildSearchQuery(options, formatted_sliderValue, rowsReturnedSlider)
         df = searchSoup(soup)
         df = epd_composite_score_app(df, includeWeightsToggle)
+        
+        # Clean up columns
         if 'TM_ACC' in df.columns:
             df = df.drop('TM_ACC', axis=1)
         if 'Growth_ACC' in df.columns:
@@ -255,29 +271,33 @@ def show():
         if 'Tattoo' in df.columns:
             df = df.drop('Tattoo', axis=1)
         df = df.loc[:, ~df.columns.str.endswith('_CNG')]
-        # Display dataframe and plots
-        col_to_move = 'Composite Score'
-        cols = list(df.columns)
-        cols.remove(col_to_move)
-        df = df[[col_to_move] + cols]
-        styled_df = df.style.applymap(score_color, subset=['Composite Score'])
-        st.data_editor(df, column_config={
-            "Composite Score": st.column_config.ProgressColumn(
-                "Composite Score",
-                help="Indexed value across all EPDs",
-                format="%f",
-                min_value=0,
-                max_value=8,
-            ),
-        }, hide_index=True)
+
+        df["Save_Sire"] = False
+        st.write("Select sires by editing cells in the table below:")
         
+        edited_df = st.data_editor(
+            df,
+            column_config={
+                "Save_Sire": st.column_config.CheckboxColumn(
+                    "Save_Sire",
+                    help="Select sires to save",
+                    default=False,
+                )
+            },
+            hide_index=True,
+            disabled=[col for col in df.columns if col != "Save_Sire"],
+            key="data_editor",
+            on_change=handle_selection
+        )
 
-        # st.dataframe(df)
-        melted_df = df.melt(id_vars=["Name","Registration", "Composite Score"], 
-                            value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
-                            var_name="EPD Type", value_name="EPD Value")
+        # Visualizations
+        melted_df = df.melt(
+            id_vars=["Name", "Registration", "Composite Score"],
+            value_vars=['CED_EPD', "BW_EPD", "WW_EPD", "YW_EPD", "Milk_EPD", "TM_EPD", "Growth_EPD", "Composite Score"],
+            var_name="EPD Type",
+            value_name="EPD Value"
+        )
 
-        # Create the line plot
         fig = px.line(melted_df, x="EPD Type", y="EPD Value", color="Name", markers=True)
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
@@ -285,10 +305,15 @@ def show():
         fig = px.scatter(df, x="Name", y="Composite Score", hover_data=["Registration"], color="Name")
         fig.update_layout(width=1500)
         st.plotly_chart(fig)
-        # styled_df = df.style.apply(highlight_cells, axis=None).format(precision=2)
 
-        styled_df = style_rank_columns(df)
-        st.dataframe(styled_df, hide_index=True)
-        
-        st.write("Test")
         download_column_as_csv(df, "Registration", "SireRegNumList.csv")
+
+    # Display saved selections outside the if sireSearchButton block
+    if 'filtered_df' in st.session_state and not st.session_state.filtered_df.empty:
+        st.write("Saved Selections:")
+        st.write(st.session_state.filtered_df)
+    
+    # Add a clear button
+    if st.button("Clear Saved Selections"):
+        st.session_state.filtered_df = pd.DataFrame()
+        st.rerun()
