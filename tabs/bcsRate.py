@@ -40,7 +40,7 @@ def show():
     Describe specifically how the subject compares to each reference image to justify your final BCS score.
 
     COMPETITIVE JUDGING CRITERIA:
-    Compare to the conformation reference and evaluate:
+    Compare to the conformation reference and evaluate but do not factor in BCS scores or reference pictures:
 
     I. Frame & Structural Correctness (30 Points)
     A. Frame Size and Scale (10 points):
@@ -153,6 +153,7 @@ def show():
     with st.sidebar:
         with st.expander("Reference Images"):
             st.subheader("BCS Reference Standards")
+            
             bcs1_file = st.file_uploader("Upload BCS 1 (Emaciated)", type=['jpg', 'jpeg', 'png'])
             if bcs1_file:
                 bcs1_image = Image.open(bcs1_file)

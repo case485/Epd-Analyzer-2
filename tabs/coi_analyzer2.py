@@ -452,107 +452,108 @@ def show():
     st.write("This is a tool to graph cattle pedigrees.")
     st_Build_Sidebar()
     if st.session_state.sirePedigreeFile and st.session_state.damPedigreeFile: 
-        start_sire_time = time.time()
-        # Load sire and dam data in wide format
-        # sire_df_wide = pd.read_csv('data_files/5gen_AF33641_FatherOf_7A01.csv')
-        # sire_df_wide = pd.read_csv('data_files/5gen_8_Bulls.csv')     
-        # dam_df_wide = pd.read_csv('data_files/5GenPedigree_SingleFemale7A01_ArtesianRanch.csv')
-        # dam_df_wide = pd.read_csv('data_files/5GenArtesianFullBloodDams.csv')
-        sire_df_wide = pd.read_csv(st.session_state.sirePedigreeFile)
-        dam_df_wide = pd.read_csv(st.session_state.damPedigreeFile)
-        resultsList = []
-        sireRowLen = len(sire_df_wide)
-        damRowLen = len(dam_df_wide)
-        st.write(f"Sires Processing : {sireRowLen}")
-        st.write(f"Dams Processing : {damRowLen}")
-        # Iterate over each sire and dam
-        for index_sire, sire_row in sire_df_wide.iterrows():
-            sire_id = str(sire_row['animal_registration']).strip()
-            sire_name = str(sire_row['animal_name']).strip()  # Assuming column 'animal_name'
-            # Import and process the row for this sire in long format
-            df_long_sire = import_data_and_format(sire_row)
-            G_sire = nx.DiGraph()
-            build_pedigree_graph(df_long_sire, G_sire, type='sire')
-            # Calculate COI and display the graph
-            G_sire = calculate_pedigree_coi(G_sire)
-            # Iterate over each dam for this sire
-            for index_dam, dam_row in dam_df_wide.iterrows():
-                print(f"Processing sire: {sire_row['animal_registration']} and dam: {dam_row['animal_registration']}**************")
-                dam_id = str(dam_row['animal_registration']).strip()
-                dam_name = str(dam_row['animal_name']).strip()
-                df_long_dam = import_data_and_format(dam_row)
-                G_dam = nx.DiGraph()
-                build_pedigree_graph(df_long_dam, G_dam, type='dam')
-                G_dam = assign_generations_to_edges(G_dam)
-                G_dam = calculate_pedigree_coi(G_dam)
-                G_offspring, offspringNode = createOffspringGraph(G_sire, G_dam)
-                G_offspring = calculate_pedigree_coi(G_offspring)
-                resultsDict  = {
-                    "offspring" : offspringNode,
-                    "sire" : sire_id,
-                    "dam" : dam_id,
-                    "sire_name" : sire_name,
-                    "dam_name" : dam_name,
-                    "sire_coi" : G_sire.nodes[sire_id]['COI'],
-                    "dam_coi": G_dam.nodes[dam_id]['COI'],
-                    "offspring_coi": G_offspring.nodes[offspringNode]['COI'],
-                    "sire_Graph": G_sire,
-                    "dam_Graph": G_dam,
-                    "offspring_Graph": G_offspring
-                    
-                }
-                resultsList.append(resultsDict)
-        coi_df = pd.DataFrame()
-        # Assuming resultsList is populated with your resultsDict entries
-        for result in resultsList:
-            sire_name = result['sire_name']
-            dam_name = result['dam_name']
-            offspring_coi = result['offspring_coi']
+        if st.button("Start COI Analayis"):
+            start_sire_time = time.time()
+            # Load sire and dam data in wide format
+            # sire_df_wide = pd.read_csv('data_files/5gen_AF33641_FatherOf_7A01.csv')
+            # sire_df_wide = pd.read_csv('data_files/5gen_8_Bulls.csv')     
+            # dam_df_wide = pd.read_csv('data_files/5GenPedigree_SingleFemale7A01_ArtesianRanch.csv')
+            # dam_df_wide = pd.read_csv('data_files/5GenArtesianFullBloodDams.csv')
+            sire_df_wide = pd.read_csv(st.session_state.sirePedigreeFile)
+            dam_df_wide = pd.read_csv(st.session_state.damPedigreeFile)
+            resultsList = []
+            sireRowLen = len(sire_df_wide)
+            damRowLen = len(dam_df_wide)
+            st.write(f"Sires Processing : {sireRowLen}")
+            st.write(f"Dams Processing : {damRowLen}")
+            # Iterate over each sire and dam
+            for index_sire, sire_row in sire_df_wide.iterrows():
+                sire_id = str(sire_row['animal_registration']).strip()
+                sire_name = str(sire_row['animal_name']).strip()  # Assuming column 'animal_name'
+                # Import and process the row for this sire in long format
+                df_long_sire = import_data_and_format(sire_row)
+                G_sire = nx.DiGraph()
+                build_pedigree_graph(df_long_sire, G_sire, type='sire')
+                # Calculate COI and display the graph
+                G_sire = calculate_pedigree_coi(G_sire)
+                # Iterate over each dam for this sire
+                for index_dam, dam_row in dam_df_wide.iterrows():
+                    print(f"Processing sire: {sire_row['animal_registration']} and dam: {dam_row['animal_registration']}**************")
+                    dam_id = str(dam_row['animal_registration']).strip()
+                    dam_name = str(dam_row['animal_name']).strip()
+                    df_long_dam = import_data_and_format(dam_row)
+                    G_dam = nx.DiGraph()
+                    build_pedigree_graph(df_long_dam, G_dam, type='dam')
+                    G_dam = assign_generations_to_edges(G_dam)
+                    G_dam = calculate_pedigree_coi(G_dam)
+                    G_offspring, offspringNode = createOffspringGraph(G_sire, G_dam)
+                    G_offspring = calculate_pedigree_coi(G_offspring)
+                    resultsDict  = {
+                        "offspring" : offspringNode,
+                        "sire" : sire_id,
+                        "dam" : dam_id,
+                        "sire_name" : sire_name,
+                        "dam_name" : dam_name,
+                        "sire_coi" : G_sire.nodes[sire_id]['COI'],
+                        "dam_coi": G_dam.nodes[dam_id]['COI'],
+                        "offspring_coi": G_offspring.nodes[offspringNode]['COI'],
+                        "sire_Graph": G_sire,
+                        "dam_Graph": G_dam,
+                        "offspring_Graph": G_offspring
+                        
+                    }
+                    resultsList.append(resultsDict)
+            coi_df = pd.DataFrame()
+            # Assuming resultsList is populated with your resultsDict entries
+            for result in resultsList:
+                sire_name = result['sire_name']
+                dam_name = result['dam_name']
+                offspring_coi = result['offspring_coi']
+                
+                # Set the COI value for the offspring in the corresponding sire column and dam row
+                coi_df.at[dam_name, sire_name] = offspring_coi
+            # Fill any missing values with NaN if needed
+            coi_df = coi_df.fillna(float('nan'))
+            sorted_coi_df = pd.DataFrame()
+            for column in coi_df.columns:
+                # Sort the column values in descending order
+                sorted_coi_df[column] = coi_df[column].sort_values(ascending=False).values
+            sorted_coi_df.to_pickle("sorted_coi_df.pkl")
+            # Set the index back to the original row names (dam names)
+            sorted_coi_df.index = coi_df.index
+            sorted_coi_df = sorted_coi_df.apply(pd.to_numeric, errors='coerce')  # Convert columns to numeric, coercing errors to NaN
+            # sorted_coi_df = sorted_coi_df.round(2)
+            # Convert to percentages and append '%' symbol
+            sorted_coi_df = sorted_coi_df * 100  # Convert to percentage
+            high_row= sorted_coi_df.max()
+            low_row = sorted_coi_df.min()
+            avg_row = sorted_coi_df.mean()
+            summary_df = pd.DataFrame([high_row, avg_row, low_row], index=['High', 'Avg', 'Low'])
+            df_with_summary = pd.concat([summary_df, sorted_coi_df], ignore_index=False)
+            df_with_summary = df_with_summary[df_with_summary.loc['Avg'].sort_values(ascending=False).index]
             
-            # Set the COI value for the offspring in the corresponding sire column and dam row
-            coi_df.at[dam_name, sire_name] = offspring_coi
-        # Fill any missing values with NaN if needed
-        coi_df = coi_df.fillna(float('nan'))
-        sorted_coi_df = pd.DataFrame()
-        for column in coi_df.columns:
-            # Sort the column values in descending order
-            sorted_coi_df[column] = coi_df[column].sort_values(ascending=False).values
-        sorted_coi_df.to_pickle("sorted_coi_df.pkl")
-        # Set the index back to the original row names (dam names)
-        sorted_coi_df.index = coi_df.index
-        sorted_coi_df = sorted_coi_df.apply(pd.to_numeric, errors='coerce')  # Convert columns to numeric, coercing errors to NaN
-        # sorted_coi_df = sorted_coi_df.round(2)
-        # Convert to percentages and append '%' symbol
-        sorted_coi_df = sorted_coi_df * 100  # Convert to percentage
-        high_row= sorted_coi_df.max()
-        low_row = sorted_coi_df.min()
-        avg_row = sorted_coi_df.mean()
-        summary_df = pd.DataFrame([high_row, avg_row, low_row], index=['High', 'Avg', 'Low'])
-        df_with_summary = pd.concat([summary_df, sorted_coi_df], ignore_index=False)
-        df_with_summary = df_with_summary[df_with_summary.loc['Avg'].sort_values(ascending=False).index]
-        
-        styled_df = df_with_summary.style.applymap(
-        highlight_gradient, 
-        subset=pd.IndexSlice[df_with_summary.index[3:], :]
-        )
-        # styled_df = sorted_coi_df.style.applymap(highlight_gradient)
-        print(type(styled_df))
-        
-        styled_df = df_with_summary.style.applymap(
+            styled_df = df_with_summary.style.applymap(
             highlight_gradient, 
             subset=pd.IndexSlice[df_with_summary.index[3:], :]
-        ).applymap(
-            grey_background, 
-            subset=pd.IndexSlice[['High', 'Avg', 'Low'], :]
-        )
-        # sorted_coi_df = sorted_coi_df.round(2).astype(str) + '%' 
-        # Display the sorted DataFrame
-        styled_df.format(precision=2)
-        styled_df = styled_df.format("{:.2f}%")
-        stop_sire_time = time.time()
-        st.write(f"Time taken: {round(stop_sire_time - start_sire_time, 2)} seconds")
-        st.table(styled_df)
-        
-        plot_avg_row_plotly(df_with_summary)
+            )
+            # styled_df = sorted_coi_df.style.applymap(highlight_gradient)
+            print(type(styled_df))
+            
+            styled_df = df_with_summary.style.applymap(
+                highlight_gradient, 
+                subset=pd.IndexSlice[df_with_summary.index[3:], :]
+            ).applymap(
+                grey_background, 
+                subset=pd.IndexSlice[['High', 'Avg', 'Low'], :]
+            )
+            # sorted_coi_df = sorted_coi_df.round(2).astype(str) + '%' 
+            # Display the sorted DataFrame
+            styled_df.format(precision=2)
+            styled_df = styled_df.format("{:.2f}%")
+            stop_sire_time = time.time()
+            st.write(f"Time taken: {round(stop_sire_time - start_sire_time, 2)} seconds")
+            st.table(styled_df)
+            
+            plot_avg_row_plotly(df_with_summary)
     else:
         st.warning("Please upload a valid pedigree files.")
