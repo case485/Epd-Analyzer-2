@@ -142,7 +142,7 @@ def show():
         return image
 
     
-    st.title("Professional Cattle Evaluation System")
+    st.title("Phenotypical Cattle Evaluation System")
     
     # Check for API key
     if not os.getenv('GOOGLE_API_KEY'):
@@ -151,43 +151,42 @@ def show():
     
     # Add reference image uploads to sidebar
     with st.sidebar:
-        st.header("Reference Images")
-        
-        st.subheader("BCS Reference Standards")
-        bcs1_file = st.file_uploader("Upload BCS 1 (Emaciated)", type=['jpg', 'jpeg', 'png'], key="bcs1")
-        if bcs1_file:
-            bcs1_image = Image.open(bcs1_file)
-            st.image(bcs1_image, caption="BCS 1 Reference", use_container_width=True)
+        with st.expander("Reference Images"):
+            st.subheader("BCS Reference Standards")
+            bcs1_file = st.file_uploader("Upload BCS 1 (Emaciated)", type=['jpg', 'jpeg', 'png'])
+            if bcs1_file:
+                bcs1_image = Image.open(bcs1_file)
+                st.image(bcs1_image, caption="BCS 1 Reference", use_container_width=True)
+                
+            st.divider()
             
-        st.divider()
-        
-        bcs5_file = st.file_uploader("Upload BCS 5 (Ideal)", type=['jpg', 'jpeg', 'png'], key="bcs5")
-        if bcs5_file:
-            bcs5_image = Image.open(bcs5_file)
-            st.image(bcs5_image, caption="BCS 5 Reference", use_container_width=True)
+            bcs5_file = st.file_uploader("Upload BCS 5 (Ideal)", type=['jpg', 'jpeg', 'png'])
+            if bcs5_file:
+                bcs5_image = Image.open(bcs5_file)
+                st.image(bcs5_image, caption="BCS 5 Reference", use_container_width=True)
+                
+            st.divider()
             
-        st.divider()
-        
-        bcs7_file = st.file_uploader("Upload BCS 7 (Moderately Obese)", type=['jpg', 'jpeg', 'png'], key="bcs7")
-        if bcs7_file:
-            bcs7_image = Image.open(bcs7_file)
-            st.image(bcs7_image, caption="BCS 7 Reference", use_container_width=True)
+            bcs7_file = st.file_uploader("Upload BCS 7 (Moderately Obese)", type=['jpg', 'jpeg', 'png'])
+            if bcs7_file:
+                bcs7_image = Image.open(bcs7_file)
+                st.image(bcs7_image, caption="BCS 7 Reference", use_container_width=True)
+                
+            st.divider()
             
-        st.divider()
-        
-        bcs9_file = st.file_uploader("Upload BCS 9 (Obese)", type=['jpg', 'jpeg', 'png'], key="bcs9")
-        if bcs9_file:
-            bcs9_image = Image.open(bcs9_file)
-            st.image(bcs9_image, caption="BCS 9 Reference", use_container_width=True)
+            bcs9_file = st.file_uploader("Upload BCS 9 (Obese)", type=['jpg', 'jpeg', 'png'])
+            if bcs9_file:
+                bcs9_image = Image.open(bcs9_file)
+                st.image(bcs9_image, caption="BCS 9 Reference", use_container_width=True)
+                
+            st.divider()
             
-        st.divider()
+            st.subheader("Conformation Reference")
+            conf_file = st.file_uploader("Upload conformation standard", type=['jpg', 'jpeg', 'png'])
+            if conf_file:
+                conf_image = Image.open(conf_file)
+                st.image(conf_image, caption="Conformation Reference", use_container_width=True)
         
-        st.subheader("Conformation Reference")
-        conf_file = st.file_uploader("Upload conformation standard", type=['jpg', 'jpeg', 'png'], key="conf")
-        if conf_file:
-            conf_image = Image.open(conf_file)
-            st.image(conf_image, caption="Conformation Reference", use_container_width=True)
-    
     # Main area for subject evaluation
     st.write("""
     ### Competition-Level Cattle Evaluation Tool
@@ -195,7 +194,7 @@ def show():
     """)
     
     st.subheader("Subject Evaluation")
-    subject_file = st.file_uploader("Upload subject to evaluate", type=['jpg', 'jpeg', 'png'], key="subject")
+    subject_file = st.file_uploader("Upload subject to evaluate", type=['jpg', 'jpeg', 'png'])
     if subject_file:
         subject_image = Image.open(subject_file)
         st.image(subject_image, caption="Subject for Evaluation", use_container_width=True)

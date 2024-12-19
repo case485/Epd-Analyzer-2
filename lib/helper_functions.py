@@ -99,18 +99,17 @@ def epd_composite_score_app(df):
                 return composite_score
 
             # Sidebar sliders to adjust weights
-            st.sidebar.write("### Adjust Weights for Compsite Score")
-
-            weights = {
-                'CED': st.sidebar.slider('CED Weight', 0.0, 2.0, 1.0, .5),
-                'BW': st.sidebar.slider('BW Weight', 0.0, 2.0, 1.0, .5),
-                'WW': st.sidebar.slider('WW Weight', 0.0, 2.0, 1.0, .5),
-                'YW': st.sidebar.slider('YW Weight', 0.0, 2.0, 1.0, .5),
-                'MK': st.sidebar.slider('Milk Weight', 0.0, 2.0, 1.0, .5),
-                'TM': st.sidebar.slider('Total Maternal Weight', 0.0, 2.0, 1.0, .5),
-                'Growth': st.sidebar.slider('Growth Idx Weight', 0.0, 2.0, 1.0, .5),
-            }
-             #DEBUG                      
+            with st.sidebar.expander("### Adjust Weights for Composite Score"):
+                weights = {
+                    'CED': st.slider('CED Weight', 0.0, 2.0, 1.0, 0.5),
+                    'BW': st.slider('BW Weight', 0.0, 2.0, 1.0, 0.5),
+                    'WW': st.slider('WW Weight', 0.0, 2.0, 1.0, 0.5),
+                    'YW': st.slider('YW Weight', 0.0, 2.0, 1.0, 0.5),
+                    'MK': st.slider('Milk Weight', 0.0, 2.0, 1.0, 0.5),
+                    'TM': st.slider('Total Maternal Weight', 0.0, 2.0, 1.0, 0.5),
+                    'Growth': st.slider('Growth Idx Weight', 0.0, 2.0, 1.0, 0.5),
+                }
+                            #DEBUG                      
             df['Composite Score'] = df.apply(calculate_composite_score, axis=1, weights=weights)
             return(df)
 
