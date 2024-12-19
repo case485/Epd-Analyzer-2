@@ -37,6 +37,7 @@ def show():
                     epds[f'{header}_Rank'] = epd_values[1]
             cow_data = {
                 'Registration': reg_no,
+                'PedigreeLink': f"https://akaushi.digitalbeef.com/modules.php?op=modload&name=_animal&file=_animal&animal_registration={reg_no}", 
                 'Tattoo': tattoo,
                 'Name': name,
                 **epds
@@ -177,6 +178,7 @@ def show():
         styled_df = df.style.apply(highlight_low_ranks).format(precision=2)
         return styled_df
 
+
     # Initialize session states
     if 'filtered_df' not in st.session_state:
         st.session_state.filtered_df = pd.DataFrame()
@@ -239,7 +241,6 @@ def show():
 
 
 
-        st.write(st.session_state.current_df.head())
         editor_container = st.empty()
         editor_response = editor_container.data_editor(
             st.session_state.current_df,
@@ -248,6 +249,9 @@ def show():
                     "Save_Sire",
                     help="Select sires to save",
                     default=False,
+                ),
+                "PedigreeLink": st.column_config.LinkColumn(
+                    "Pedigree Link", display_text="Open profile"
                 )
             },
             hide_index=True,
@@ -302,3 +306,5 @@ def show():
         st.session_state.current_df = None
         st.session_state.show_editor = False
         st.rerun()
+
+
